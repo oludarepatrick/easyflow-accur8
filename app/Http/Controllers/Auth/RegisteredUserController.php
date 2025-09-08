@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\School;
 
 class RegisteredUserController extends Controller
 {
@@ -27,24 +28,34 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'firstname' => 'required|string|max:255',
+        'lastname'  => 'required|string|max:255',
+        'email'     => 'required|email|unique:users,email',
+        'phone'     => 'nullable|string',
+        'category'  => 'required|in:student,staff',
+        'class'     => 'required_if:category,student|nullable|string|max:50',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    // Fetch school term & session from settings table
+    $settings = School::first();
 
-        event(new Registered($user));
+    User::create([
+        'firstname'   => $validated['firstname'],
+        'lastname'    => $validated['lastname'],
+        'email'       => $validated['email'],
+        'phone'       => $validated['phone'] ?? null,
+        'category'    => $validated['category'],
+        'class'       => $validated['category'] === 'student' ? $validated['class'] : null,
+        'term'        => $settings->term ?? null,
+        'session'     => $settings->session ?? null,
+        'status'      => 'active',
+    ]);
 
-        Auth::login($user);
+    return redirect()->route('register')->with('success', 'Registration successful.');
+}
 
-        return redirect(route('dashboard', absolute: false));
-    }
+
 }

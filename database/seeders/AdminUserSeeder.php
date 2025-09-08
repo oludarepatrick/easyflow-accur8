@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AdminUserSeeder extends Seeder
 {
@@ -13,24 +13,23 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create an admin user if not already exists
-        User::firstOrCreate(
-            ['email' => 'easy_admin@school.com'],
+        DB::table('admins')->insert([
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make('password@123'), // 👈 change to a secure password
-                'role' => User::ROLE_ADMIN,
-            ]
-        );
-
-        // Optional: Create a sample clerk
-        User::firstOrCreate(
-            ['email' => 'easy_clerk@school.com'],
-            [
-                'name' => 'Account Clerk',
+                'email' => 'easy_admin@school.com',
                 'password' => Hash::make('password@123'),
-                'role' => User::ROLE_CLERK,
-            ]
-        );
+                'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'School Clerk',
+                'email' => 'easy_clerk@school.com',
+                'password' => Hash::make('password@123'),
+                'role' => 'clerk',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
