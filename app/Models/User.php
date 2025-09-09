@@ -66,4 +66,17 @@ class User extends Authenticatable
     {
         return $this->role === self::ROLE_CLERK;
     }
+
+     use HasFactory, Notifiable;
+
+    // relationships
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'student_id');
+    }
+
+    public function salaries()
+    {
+        return $this->hasMany(Salary::class, 'staff_id');
+    }
 }
