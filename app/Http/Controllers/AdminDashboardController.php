@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Salary;
+use App\Models\StudentReceipts;
+use App\Models\StudentPayments;
 use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
@@ -37,9 +39,13 @@ class AdminDashboardController extends Controller
         ->sum('net_pay');
 
     // ✅ 3 most recent invoices (include student relationship)
-    $recentInvoices = Invoice::with('student')
+    /*$recentInvoices = Invoice::with('student')
         ->where('status', 'paid')
         ->latest()
+        ->take(3)
+        ->get();*/
+        $recentInvoices = StudentPayments::with(['student'])
+        ->latest('payment_date') // or 'created_at' if that's your timestamp
         ->take(3)
         ->get();
 

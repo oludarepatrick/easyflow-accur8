@@ -38,15 +38,20 @@
                         </ul>
                     </div>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.fees.index') }}">
+                        <i class="bi bi-cash-stack"></i> Fee Setup
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="bi bi-person-badge"></i> Staff
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-file-earmark-text"></i> Reports
+                    <a class="nav-link" href="{{ route('admin.statements.payments') }}">
+                        <i class="bi bi-file-text"></i> Statement
                     </a>
                 </li>
                 <li class="nav-item">

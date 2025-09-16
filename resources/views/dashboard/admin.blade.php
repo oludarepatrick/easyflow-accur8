@@ -82,7 +82,7 @@
                                                 <small>{{ $invoice->created_at->diffForHumans() }}</small>
                                             </div>
                                             <p class="mb-1">Term {{ ucfirst($invoice->term) }} Fees</p>
-                                            <small class="text-success">#{{ number_format($invoice->total_amount, 2) }}</small>
+                                            <small class="text-success">#{{ number_format($invoice->amount_paid, 2) }}</small>
                                         </div>
                                     @endforeach
 

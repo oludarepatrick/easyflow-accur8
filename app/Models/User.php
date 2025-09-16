@@ -79,4 +79,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Salary::class, 'staff_id');
     }
+
+    public function receipts()
+    {
+        return $this->hasMany(StudentReceipts::class, 'student_id');
+    }
+
+    public function activeReceipt()
+    {
+        $school = School::first(); // get current term & session
+        return $this->hasOne(StudentReceipts::class, 'student_id')
+            ->where('term', $school->term)
+            ->where('session', $school->session);
+    }
+
 }

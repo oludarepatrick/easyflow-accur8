@@ -1,64 +1,95 @@
-<x-guest-layout>
-    <div class="text-center mb-6">
-        <img src="{{ asset('favi1.png') }}" alt="App Logo" class="mx-auto h-16 w-auto">
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | MegaCoop</title>
 
-    @if(session('error'))
-        <div class="mb-4 text-red-600 text-sm text-center">
-            {{ session('error') }}
-        </div>
-    @endif
-    @if(session('success'))
-        <div class="mb-4 text-green-600 text-sm text-center">
-            {{ session('success') }}
-        </div>
-    @endif
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    <style>
+        body {
+            background: #f8fafc;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .login-logo img {
+            height: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card login-card p-4">
+            <div class="text-center login-logo mb-3">
+                <img src="{{ asset('favi1.png') }}" alt="App Logo">
+            </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full"
-                type="email"
-                name="email"
-                :value="old('email')"
-                required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full"
-                type="password"
-                name="password"
-                required />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-between mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
+            <!-- Flash Messages -->
+            @if(session('error'))
+                <div class="alert alert-danger text-center py-2">{{ session('error') }}</div>
+            @endif
+            @if(session('success'))
+                <div class="alert alert-success text-center py-2">{{ session('success') }}</div>
             @endif
 
-            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Register</a>
+            <!-- Login Form -->
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
 
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Email</label>
+                    <input type="email" name="email" id="email" class="form-control"
+                           value="{{ old('email') }}" required autofocus>
+                    @error('email')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                    @error('password')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Remember Me -->
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="remember" id="remember_me" class="form-check-input">
+                    <label for="remember_me" class="form-check-label">Remember Me</label>
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-between align-items-center">
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="text-decoration-none small">
+                            Forgot Password?
+                        </a>
+                    @endif
+
+                    <button type="submit" class="btn btn-primary">
+                        Log in
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
-</x-guest-layout>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
