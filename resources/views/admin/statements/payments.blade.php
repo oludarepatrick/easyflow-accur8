@@ -10,9 +10,7 @@
             <a href="{{ route('admin.statements.payments.pdf', request()->query()) }}" class="btn btn-outline-secondary me-1">
                 <i class="bi bi-file-earmark-pdf"></i> Download PDF
             </a>
-            <a href="{{ route('admin.statements.payments.excel', request()->query()) }}" class="btn btn-outline-success me-1">
-                <i class="bi bi-file-earmark-excel"></i> Download Excel
-            </a>
+            
             <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#emailModal">
                 <i class="bi bi-envelope"></i> Email Statement
             </button>

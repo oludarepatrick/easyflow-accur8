@@ -124,7 +124,6 @@ Route::prefix('admin')->group(function () {
 Route::middleware(['auth:admin','role:admin'])->prefix('admin')->group(function () {
     Route::get('statements/payments', [StatementController::class, 'index'])->name('admin.statements.payments');
     Route::get('statements/payments/export/pdf', [StatementController::class, 'exportPdf'])->name('admin.statements.payments.pdf');
-    Route::get('statements/payments/export/excel', [StatementController::class, 'exportExcel'])->name('admin.statements.payments.excel');
     Route::post('statements/payments/email', [StatementController::class, 'emailStatement'])->name('admin.statements.payments.email');
 });
 

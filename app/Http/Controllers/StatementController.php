@@ -68,12 +68,7 @@ class StatementController extends Controller
         return $pdf->download($filename);
     }
 
-    public function exportExcel(Request $request)
-    {
-        $payments = $this->paymentsQuery($request)->orderBy('payment_date','desc')->get();
-        $filename = 'payments-statement-'.now()->format('YmdHis').'.xlsx';
-        return Excel::download(new PaymentsStatementExport($payments), $filename);
-    }
+    
 
     public function emailStatement(Request $request)
     {
@@ -98,7 +93,7 @@ class StatementController extends Controller
                 'content-type'  => 'application/json',
             ])->timeout(30)
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
-                "template_key" => "send-statement", // create this template in ZeptoMail
+                "template_key" => "email-statement", // create this template in ZeptoMail
                 "from" => [
                     "address" => "development@leverpay.io",
                     "name"    => $school->name ?? 'School'
