@@ -10,6 +10,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentReceiptController;
 use App\Http\Controllers\SchoolFeeController;
 use App\Http\Controllers\StatementController;
+use App\Http\Controllers\ClerkController;
 
 // ========================
 // Authentication Routes
@@ -125,8 +126,15 @@ Route::middleware(['auth:admin','role:admin'])->prefix('admin')->group(function 
     Route::get('statements/payments', [StatementController::class, 'index'])->name('admin.statements.payments');
     Route::get('statements/payments/export/pdf', [StatementController::class, 'exportPdf'])->name('admin.statements.payments.pdf');
     Route::post('statements/payments/email', [StatementController::class, 'emailStatement'])->name('admin.statements.payments.email');
+    Route::get('/reports/owing-students', [StatementController::class, 'owingReport'])->name('reports.owing-students');
+    Route::get('/reports/owing-students/pdf', [StatementController::class, 'owingStudentsPdf'])->name('reports.owing-students.pdf');
+
 });
 
+//Check Clerk and then allow access to clerk dashboard
+Route::middleware(['auth:admin', 'role:clerk'])->group(function () {
+    Route::get('/clerk/dashboard', [ClerkController::class, 'index'])->name('clerk.dashboard');
+});
 
 // Breeze/Fortify authentication routes (users, not admins)
 require __DIR__.'/auth.php';

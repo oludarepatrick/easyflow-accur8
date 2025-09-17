@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StudentPayments;
+use App\Models\StudentReceipts;
 use App\Models\School;
 use App\Models\User;
 use Carbon\Carbon;
@@ -147,5 +148,53 @@ class StatementController extends Controller
         }
 
         return $query;
+    }
+
+    public function owingReport(Request $request)
+    {
+        $term    = $request->input('term');
+        $session = $request->input('session');
+
+        // 🔎 Filter receipts (students who still owe)
+        $query = StudentReceipts::with('student', 'payments')
+            ->where('amount_due', '>', 0);
+
+        if ($term) {
+            $query->where('term', $term);
+        }
+
+        if ($session) {
+            $query->where('session', $session);
+        }
+
+        $receipts = $query->get();
+
+        // 🔢 Summary for chart
+        $totalPaid = $receipts->sum('amount_paid');
+        $totalDebt = $receipts->sum('amount_due');
+
+        if ($request->has('download') && $request->download === 'pdf') {
+            $school = \App\Models\School::first();
+            $pdf = \PDF::loadView(
+                'admin.statements.owing-pdf',
+                compact('receipts', 'school', 'term', 'session', 'totalPaid', 'totalDebt')
+            );
+            return $pdf->download("owing_report_{$term}_{$session}.pdf");
+        }
+            $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
+        $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
+        $school = School::first();
+        return view(
+            'admin.statements.owing-report',
+            compact('receipts', 'terms', 'sessions', 'totalPaid', 'totalDebt')
+        );
+    }
+
+
+    public function owingStudentsPdf(Request $request)
+    {
+        $data = $this->owingStudents($request)->getData(); // reuse logic
+        $pdf = \PDF::loadView('backend.reports.pdf.owing_students', (array)$data);
+        return $pdf->download('owing-students-report.pdf');
     }
 }

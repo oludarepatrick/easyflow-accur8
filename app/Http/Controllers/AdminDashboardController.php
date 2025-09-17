@@ -39,11 +39,7 @@ class AdminDashboardController extends Controller
         ->sum('net_pay');
 
     // ✅ 3 most recent invoices (include student relationship)
-    /*$recentInvoices = Invoice::with('student')
-        ->where('status', 'paid')
-        ->latest()
-        ->take(3)
-        ->get();*/
+    
         $recentInvoices = StudentPayments::with(['student'])
         ->latest('payment_date') // or 'created_at' if that's your timestamp
         ->take(3)

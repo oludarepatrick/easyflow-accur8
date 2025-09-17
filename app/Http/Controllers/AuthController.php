@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -19,12 +20,17 @@ class AuthController extends Controller
 
             $admin = Auth::guard('admin')->user();
 
-            if ($admin->role === 'admin') {
-                return redirect()->route('admin.dashboard')
-                                 ->with('success', 'Welcome Admin!');
-            } elseif ($admin->role === 'clerk') {
-                return redirect()->route('clerk.dashboard')
-                                 ->with('success', 'Welcome Clerk!');
+            switch ($admin->role) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard')
+                        ->with('success', 'Welcome Admin!');
+                case 'clerk':
+                    return redirect()->route('clerk.dashboard')
+                        ->with('success', 'Welcome Clerk!');
+                default:
+                    Auth::guard('admin')->logout();
+                    return redirect()->route('login')
+                        ->with('error', 'Unauthorized role.');
             }
         }
 
@@ -41,3 +47,4 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
 }
+

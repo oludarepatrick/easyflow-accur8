@@ -15,18 +15,18 @@
     }
     table { width:100%; border-collapse: collapse; }
     th, td { border: 1px solid #ddd; padding: 6px; text-align:left; }
-    .title { font-size: 18px; font-weight: 700; }
+    .title { font-size: 25px; font-weight: 700; color: #990814ff; }
+    .address { font-size: 15px; font-weight: 400; color: #4a07c5ff; }
     .right { text-align: right; }
   </style>
 </head>
 <body>
-  @if($school && $school->logo)
-    <img class="watermark" src="{{ public_path('storage/'.$school->logo) }}" alt="logo">
-  @endif
+    <img class="watermark"  src="{{ asset('favi1.png') }}" alt="App Logo" class="mx-auto h-16 w-auto">
+ 
 
   <div class="header">
-    <div class="title">{{ $school->name ?? 'School Name' }}</div>
-    <div>{{ $school->address ?? '' }}</div>
+    <div class="title">{{ $school->schoolname ?? 'School Name' }}</div>
+    <div class="address">{{ $school->address ?? '' }}</div>
     <div style="margin-top:8px;">Student Payments Statement</div>
     <div style="margin-top:6px;">Generated: {{ now()->format('d M Y, h:i A') }}</div>
   </div>
