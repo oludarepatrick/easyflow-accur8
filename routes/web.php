@@ -109,10 +109,10 @@ Route::post('/students/receipts/{id}/reminder', [StudentReceiptController::class
 
 
 // ======================= ADMIN FEES SETUP =======================
-Route::prefix('admin/fees')->group(function () {
+/*Route::prefix('admin/fees')->group(function () {
     Route::get('/', [SchoolFeeController::class, 'index'])->name('admin.fees.index');
     Route::post('/store', [SchoolFeeController::class, 'store'])->name('admin.fees.store');
-});
+});*/
 
 Route::prefix('admin')->group(function () {
     Route::get('/fees', [SchoolFeeController::class, 'index'])->name('admin.fees.index');
