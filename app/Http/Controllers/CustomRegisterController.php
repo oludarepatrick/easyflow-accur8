@@ -101,7 +101,9 @@ class CustomRegisterController extends Controller
         Log::error('Failed to send onboarding email: ' . $e->getMessage());
     }
 
-    return redirect()->route('register.form')->with('success', 'Registration successful. Emails sent.');
+    //return redirect()->route('register.form')->with('success', 'Registration successful. Emails sent.');
+    return back()->with('success', 'Registration successful. Emails sent.');
+
 }
 }
 
