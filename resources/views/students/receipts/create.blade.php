@@ -14,27 +14,27 @@
 
         <div class="mb-3">
             <label>Tuition</label>
-            <input type="number" name="tuition" class="form-control" required>
+            <input type="number" name="tuition" class="form-control calc-field" required>
         </div>
 
         <div class="mb-3">
             <label>Uniform</label>
-            <input type="number" name="uniform" class="form-control" required>
+            <input type="number" name="uniform" class="form-control calc-field" required>
         </div>
 
         <div class="mb-3">
             <label>Exam Fee</label>
-            <input type="number" name="exam_fee" class="form-control" required>
+            <input type="number" name="exam_fee" class="form-control calc-field" required>
         </div>
 
         <div class="mb-3">
             <label>Discount</label>
-            <input type="number" name="discount" class="form-control" value="0">
+            <input type="number" name="discount" class="form-control calc-field" value="0">
         </div>
 
         <div class="mb-3">
             <label>Amount Paid</label>
-            <input type="number" name="amount_paid" class="form-control" required>
+            <input type="number" name="amount_paid" class="form-control" required readonly>
         </div>
 
         <div class="mb-3">
@@ -46,8 +46,25 @@
             </select>
         </div>
 
-
         <button type="submit" class="btn btn-success">Generate Receipt</button>
     </form>
 </div>
+
+{{-- Calculation Script --}}
+<script>
+    function calculateAmountPaid() {
+        let tuition = parseFloat(document.querySelector('[name="tuition"]').value) || 0;
+        let uniform = parseFloat(document.querySelector('[name="uniform"]').value) || 0;
+        let exam    = parseFloat(document.querySelector('[name="exam_fee"]').value) || 0;
+        let discount = parseFloat(document.querySelector('[name="discount"]').value) || 0;
+
+        let total = (tuition + uniform + exam) - discount;
+        document.querySelector('[name="amount_paid"]').value = total >= 0 ? total : 0;
+    }
+
+    // Attach event listeners
+    document.querySelectorAll('.calc-field').forEach(el => {
+        el.addEventListener('input', calculateAmountPaid);
+    });
+</script>
 @endsection

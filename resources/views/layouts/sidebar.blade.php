@@ -71,11 +71,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-gear"></i> Settings
-                    </a>
-                </li>
+                
             </ul>
         @endif
 
@@ -93,16 +89,7 @@
                         <i class="bi bi-pencil-square"></i> Register
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-cash-stack"></i> Create Invoice
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-printer"></i> Print Invoice
-                    </a>
-                </li>
+                
             </ul>
         @endif
 
