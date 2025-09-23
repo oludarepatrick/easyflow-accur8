@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
         DB::table('admins')->insert([
             [
                 'name' => 'Super Admin',
-                'email' => 'easy_admin@school.com',
+                'email' => 'easy_admin@easyflowcollege.com.ng',
                 'password' => Hash::make('password@123'),
                 'role' => 'admin',
                 'created_at' => now(),
@@ -24,8 +24,8 @@ class AdminUserSeeder extends Seeder
             ],
             [
                 'name' => 'School Clerk',
-                'email' => 'easy_clerk@school.com',
-                'password' => Hash::make('password@123'),
+                'email' => 'easy_clerk@easyflowcollege.com.ng',
+                'password' => Hash::make('password@456'),
                 'role' => 'clerk',
                 'created_at' => now(),
                 'updated_at' => now(),
