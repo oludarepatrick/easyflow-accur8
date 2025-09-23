@@ -12,7 +12,7 @@ class SchoolSeeder extends Seeder
         School::updateOrCreate(
             ['schoolname' => 'Easyflow Schools'], // use your default school name
             [
-                'email' => 'info@easyflowcollege.com.ng',
+                'email' => 'account@easyflowcollege.com.ng',
                 'phone' => '+2348012345678',
                 'address' => 'Plot 7, Lekan Oyekunle Str, Meiran Bustop, Agbado-Ijaye, Lagos.',
                 'logo_url' => '/images/logo.png',
