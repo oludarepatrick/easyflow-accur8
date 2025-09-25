@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\StaffBankDetail;
+use App\Models\StaffSalary;
 
 class User extends Authenticatable
 {
@@ -75,10 +77,6 @@ class User extends Authenticatable
         return $this->hasMany(Invoice::class, 'student_id');
     }
 
-    public function salaries()
-    {
-        return $this->hasMany(Salary::class, 'staff_id');
-    }
 
     public function receipts()
     {
@@ -91,6 +89,16 @@ class User extends Authenticatable
         return $this->hasOne(StudentReceipts::class, 'student_id')
             ->where('term', $school->term)
             ->where('session', $school->session);
+    }
+
+    public function bankDetail()
+    {
+        return $this->hasOne(StaffBankDetail::class, 'staff_id');
+    }
+
+    public function salaries()
+    {
+        return $this->hasMany(StaffSalary::class, 'staff_id');
     }
 
 }

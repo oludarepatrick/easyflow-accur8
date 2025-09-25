@@ -11,6 +11,7 @@ use App\Http\Controllers\StudentReceiptController;
 use App\Http\Controllers\SchoolFeeController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\ClerkController;
+use App\Http\Controllers\StaffController;
 
 // ========================
 // Authentication Routes
@@ -128,6 +129,22 @@ Route::middleware(['auth:admin','role:admin'])->prefix('admin')->group(function 
     Route::post('statements/payments/email', [StatementController::class, 'emailStatement'])->name('admin.statements.payments.email');
     Route::get('/reports/owing-students', [StatementController::class, 'owingReport'])->name('reports.owing-students');
     Route::get('/reports/owing-students/pdf', [StatementController::class, 'owingStudentsPdf'])->name('reports.owing-students.pdf');
+
+});
+
+Route::prefix('admin')->group(function () {
+    Route::get('/', [StaffController::class, 'index'])->name('staff.index');
+    Route::get('/{id}', [StaffController::class, 'show'])->name('staff.show');
+    Route::post('/{id}/deactivate', [StaffController::class, 'deactivate'])->name('staff.deactivate');
+    Route::delete('/{id}', [StaffController::class, 'destroy'])->name('staff.destroy');
+
+    Route::put('/staff/{id}/profile', [StaffController::class, 'updateProfile'])->name('staff.updateProfile');
+    Route::put('/staff/{id}/bank', [StaffController::class, 'updateBank'])->name('staff.updateBank');
+    Route::post('/staff/{id}/salary', [StaffController::class, 'addSalary'])->name('staff.salary.store');
+
+    Route::get('/salary/{id}/download', [StaffController::class, 'downloadPayslip'])->name('salary.download');
+    Route::get('/salary/{id}/email', [StaffController::class, 'emailPayslip'])->name('salary.email');
+    Route::patch('/salary/{id}/mark-paid', [StaffController::class, 'markAsPaid'])->name('salary.markPaid');
 
 });
 

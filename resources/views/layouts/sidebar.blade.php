@@ -44,10 +44,11 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-person-badge"></i> Staff
+                    <a href="{{ route('staff.index') }}" class="nav-link">
+                        <span><i class="bi bi-people"></i> Staff Management</span>
                     </a>
                 </li>
+
 
                 <li class="nav-item">
                     <a class="nav-link d-flex justify-content-between align-items-center" 
@@ -76,7 +77,7 @@
         @endif
 
         {{-- Clerk (and Admin too) links --}}
-        @if(Auth::guard('admin')->check() && in_array(Auth::guard('admin')->user()->role, ['admin','clerk']))
+        @if(Auth::guard('admin')->check() && in_array(Auth::guard('admin')->user()->role, ['clerk']))
             <ul class="nav flex-column mt-3">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('clerk/dashboard') ? 'active' : '' }}"
