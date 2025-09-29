@@ -179,13 +179,13 @@ public function store(Request $request, $studentId)
                         "amount_paid"  => $receipt->payments->sum('amount_paid') ?? 0,
                         "amount_due"   => $receipt->amount_due ?? 0,
                     ],
-                    /*"attachments" => [
+                    "attachments" => [
                         [
                             "name"      => "receipt-{$receipt->id}.pdf",
                             "mime_type" => "application/pdf",
                             "content"   => base64_encode($pdf),
                         ]
-                    ]*/
+                    ]
                 ]);
 
             if ($response->failed()) {
