@@ -381,5 +381,13 @@ public function addSalary(Request $request, $id)
 
     return back()->with('success', 'Salary statement emailed successfully.');
 }
+
+public function deleteSalary($id)
+{
+    $salary = \App\Models\StaffSalary::findOrFail($id);
+    $salary->delete();
+
+    return redirect()->back()->with('success', 'Salary record deleted successfully.');
+}
     
 }

@@ -213,6 +213,17 @@
                                             </button>
                                         </form>
                                     @endif
+
+                                    {{-- Delete Salary --}}
+                                    <form action="{{ route('staff.salary.delete', $salary->id) }}" 
+                                        method="POST" class="d-inline delete-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete" 
+                                                data-bs-toggle="tooltip" title="Delete Salary">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
 
                             </tr>
@@ -330,6 +341,38 @@
         })
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Delete confirmation
+    document.querySelectorAll(".btn-delete").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            let form = this.closest("form");
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
 
 <style>
     .custom-download {
