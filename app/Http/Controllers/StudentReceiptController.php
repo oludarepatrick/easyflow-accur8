@@ -157,9 +157,9 @@ public function store(Request $request, $studentId)
         try {
             $response = Http::withoutVerifying()
                 ->withHeaders([
-                    'Authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
+                    'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
+                    'accept'        => 'application/json',
+                    'content-Type'  => 'application/json',
                 ])
                 ->timeout(30)
                 ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
