@@ -76,6 +76,8 @@
                                 <label class="form-label fw-bold">Class</label>
                                 <select name="class" class="form-select">
                                     <option value="">-- Select Class --</option>
+                                    <option value="ADMIN" {{ $staff->class == 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
+                                    <option value="SUPPORT STAFF" {{ $staff->class == 'SUPPORT STAFF' ? 'selected' : '' }}>SUPPORT STAFF</option>
                                     <option value="CRECHE" {{ $staff->class == 'CRECHE' ? 'selected' : '' }}>CRECHE</option>
                                     <option value="PREP" {{ $staff->class == 'PREP' ? 'selected' : '' }}>PREP</option>
                                     <option value="KG 1" {{ $staff->class == 'KG 1' ? 'selected' : '' }}>KG 1</option>

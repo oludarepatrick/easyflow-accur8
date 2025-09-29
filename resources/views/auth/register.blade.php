@@ -87,7 +87,7 @@
                                 id="class" name="class">
                             <option value="">-- Select Class --</option>
                             @php
-                                $classes = ['CRECHE','PREP','KG 1','KG 2','NURSERY 1','NURSERY 2','GRADE 1','GRADE 2','GRADE 3','GRADE 4','GRADE 5','GRADE 6','JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
+                                $classes = ['ADMIN','SUPPORT STAFF','CRECHE','PREP','KG 1','KG 2','NURSERY 1','NURSERY 2','GRADE 1','GRADE 2','GRADE 3','GRADE 4','GRADE 5','GRADE 6','JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
                             @endphp
                             @foreach($classes as $cls)
                                 <option value="{{ $cls }}" {{ old('class')==$cls?'selected':'' }}>{{ $cls }}</option>

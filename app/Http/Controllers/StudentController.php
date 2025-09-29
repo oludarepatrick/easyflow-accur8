@@ -57,7 +57,7 @@ class StudentController extends Controller
         $currentTerm    = $school->term ?? null;
 
         // Predefined dropdowns
-        $classes = ['CRECHE','PREP','KG 1','KG 2','NURSERY 1','NURSERY 2','GRADE 1','GRADE 2','GRADE 3','GRADE 4','GRADE 5','GRADE 6',
+        $classes = ['ADMIN','SUPPORT STAFF','CRECHE','PREP','KG 1','KG 2','NURSERY 1','NURSERY 2','GRADE 1','GRADE 2','GRADE 3','GRADE 4','GRADE 5','GRADE 6',
                     'JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
         $terms   = ['First Term','Second Term','Third Term'];
         $sessions = [];  
