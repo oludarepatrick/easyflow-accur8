@@ -62,7 +62,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('staff.salary.statement') }}" class="nav-link">
-                                    <i class="bi bi-file-text"></i> Payment Statement
+                                    <i class="bi bi-file-text"></i> Salary Statement
                                 </a>
                             </li>
                         </ul>
