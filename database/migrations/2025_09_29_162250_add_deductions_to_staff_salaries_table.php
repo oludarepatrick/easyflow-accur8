@@ -15,7 +15,7 @@ return new class extends Migration
              $table->decimal('tax_deduction', 10, 2)
                   ->nullable()
                   ->default(0.00)
-                  ->after('net_salary');
+                  ->after('net_pay');
 
             $table->decimal('social_deduction', 10, 2)
                   ->nullable()
