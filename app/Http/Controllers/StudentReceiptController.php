@@ -145,53 +145,59 @@ public function store(Request $request, $studentId)
     }
 
    public function emailReceipt($id)
-{
-    $receipt = StudentReceipts::with(['student', 'payments'])->findOrFail($id);
-    $school  = School::first();
+    {
+        $receipt = StudentReceipts::with(['student', 'payments'])->findOrFail($id);
+        $school  = School::first();
 
-    
-    $pdf = Pdf::loadView('students.receipts.pdf', compact('receipt', 'school'))->output();
+        // generate PDF
+        $pdf = Pdf::loadView('students.receipts.pdf', compact('receipt', 'school'))->output();
 
-    // send via ZeptoMail template API
-    $response = Http::withoutVerifying()
-        ->withHeaders([
-            'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
-            'accept'        => 'application/json',
-            'content-type'  => 'application/json',
-        ])->timeout(30)
-        ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
-            "template_key" => "mail-receipt",
-            "from" => [
-                "address" => "development@leverpay.io", // must be verified in ZeptoMail
-                "name"    => "School Receipt"
-            ],
-            "to" => [
-                ["email_address" => ["address" => $receipt->student->email]]
-            ],
-            "merge_info" => [
-                // 👇 These keys must match your template placeholders
-                "firstname"    => $receipt->student->firstname,
-                "term"         => $receipt->term ?? 'N/A',
-                "session"      => $receipt->session ?? 'N/A',
-                "class"        => $receipt->student->class ?? 'N/A',
-                "amount_paid"  => $receipt->payments->sum('amount_paid'),
-                "amount_due"  => $receipt->amount_due ?? 0,
-            ],
-            "attachments" => [
-                [
-                    "name"      => "receipt-{$receipt->id}.pdf",
-                    "mime_type" => "application/pdf",
-                    "content"   => base64_encode($pdf)
-                ]
-            ]
-        ]);
+        try {
+            $response = Http::withoutVerifying()
+                ->withHeaders([
+                    'Authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                ])
+                ->timeout(30)
+                ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
+                    "template_key" => "mail-receipt", // <-- must match exactly in ZeptoMail
+                    "from" => [
+                        "address" => "development@leverpay.io", // must be verified in ZeptoMail
+                        "name"    => "School Receipt"
+                    ],
+                    "to" => [
+                        ["email_address" => ["address" => $receipt->student->email ?? 'no-reply@easyflowcollege.com']]
+                    ],
+                    "merge_info" => [
+                        "firstname"    => $receipt->student->firstname ?? 'N/A',
+                        "term"         => $receipt->term ?? 'N/A',
+                        "session"      => $receipt->session ?? 'N/A',
+                        "class"        => $receipt->student->class ?? 'N/A',
+                        "amount_paid"  => $receipt->payments->sum('amount_paid') ?? 0,
+                        "amount_due"   => $receipt->amount_due ?? 0,
+                    ],
+                    "attachments" => [
+                        [
+                            "name"      => "receipt-{$receipt->id}.pdf",
+                            "mime_type" => "application/pdf",
+                            "content"   => base64_encode($pdf),
+                        ]
+                    ]
+                ]);
 
-    if ($response->failed()) {
-        return back()->with('error', 'Failed to send receipt: ' . $response->body());
+            if ($response->failed()) {
+                \Log::error('ZeptoMail error: ' . $response->body());
+                return back()->with('error', 'Failed to send receipt.');
+            }
+
+            return back()->with('success', 'Receipt emailed successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Receipt email exception: ' . $e->getMessage());
+            return back()->with('error', 'An unexpected error occurred while sending email.');
+        }
     }
 
-    return back()->with('success', 'Receipt emailed successfully.');
-}
 
     public function sendPaymentReminder($id)
     {
