@@ -24,7 +24,7 @@ class CustomRegisterController extends Controller
     $validated = $request->validate([
         'firstname' => 'required|string|max:255',
         'lastname'  => 'required|string|max:255',
-        'email'     => 'required|email|unique:users,email',
+        'email' => 'required|string|email|max:255',
         'phone'     => 'nullable|string',
         'category'  => 'required|in:student,staff',
         'class'     => 'required_if:category,student|nullable|string|max:50',
