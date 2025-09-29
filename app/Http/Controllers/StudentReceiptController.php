@@ -177,13 +177,13 @@ public function store(Request $request, $studentId)
                         "amount_paid"  => $receipt->payments->sum('amount_paid') ?? 0,
                         "amount_due"   => $receipt->amount_due ?? 0,
                     ],
-                    "attachments" => [
+                    /*"attachments" => [
                         [
                             "name"      => "receipt-{$receipt->id}.pdf",
                             "mime_type" => "application/pdf",
                             "content"   => base64_encode($pdf),
                         ]
-                    ]
+                    ]*/
                 ]);
 
             if ($response->failed()) {
@@ -194,7 +194,8 @@ public function store(Request $request, $studentId)
             return back()->with('success', 'Receipt emailed successfully.');
         } catch (\Exception $e) {
             \Log::error('Receipt email exception: ' . $e->getMessage());
-            return back()->with('error', 'An unexpected error occurred while sending email.');
+            \Log::error($e->getTraceAsString());
+            dd('Exception: ' . $e->getMessage());
         }
     }
 
