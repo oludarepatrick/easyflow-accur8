@@ -146,6 +146,10 @@ Route::prefix('admin')->group(function () {
     Route::get('/salary/{id}/email', [StaffController::class, 'emailPayslip'])->name('salary.email');
     Route::patch('/salary/{id}/mark-paid', [StaffController::class, 'markAsPaid'])->name('salary.markPaid');
 
+    Route::get('/staff/salary-statement', [StaffController::class, 'salaryStatement'])->name('staff.salary.statement');
+    Route::get('/staff/salary-statement/download', [StaffController::class, 'downloadSalaryStatement'])->name('staff.salary.statement.download');
+    Route::post('/staff/salary-statement/email', [StaffController::class, 'emailSalaryStatement'])->name('staff.salary.statement.email');
+   
 });
 
 //Check Clerk and then allow access to clerk dashboard

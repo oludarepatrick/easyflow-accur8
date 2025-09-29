@@ -15,6 +15,7 @@
                     </a>
                 </li>
 
+                {{-- Students --}}
                 <li class="nav-item">
                     <a class="nav-link d-flex justify-content-between align-items-center" 
                        data-bs-toggle="collapse" href="#studentsMenu" role="button" aria-expanded="false" aria-controls="studentsMenu">
@@ -37,19 +38,38 @@
                     </div>
                 </li>
 
+                {{-- Fee Setup --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('admin.fees.index') }}">
                         <i class="bi bi-cash-stack"></i> Fee Setup
                     </a>
                 </li>
-
+                
+                {{-- Staff Management --}}
                 <li class="nav-item">
-                    <a href="{{ route('staff.index') }}" class="nav-link">
+                    <a class="nav-link d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#staffMenu" role="button" 
+                       aria-expanded="false" aria-controls="staffMenu">
                         <span><i class="bi bi-people"></i> Staff Management</span>
+                        <i class="bi bi-chevron-down"></i>
                     </a>
+                    <div class="collapse" id="staffMenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a href="{{ route('staff.index') }}" class="nav-link">
+                                    <i class="bi bi-people"></i> Payroll
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('staff.salary.statement') }}" class="nav-link">
+                                    <i class="bi bi-file-text"></i> Payment Statement
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
-
+                {{-- Reports --}}
                 <li class="nav-item">
                     <a class="nav-link d-flex justify-content-between align-items-center" 
                        data-bs-toggle="collapse" href="#reportsMenu" role="button" aria-expanded="false" aria-controls="reportsMenu">
@@ -71,8 +91,6 @@
                         </ul>
                     </div>
                 </li>
-
-                
             </ul>
         @endif
 
@@ -90,7 +108,6 @@
                         <i class="bi bi-pencil-square"></i> Register
                     </a>
                 </li>
-                
             </ul>
         @endif
 

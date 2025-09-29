@@ -99,10 +99,19 @@
             <tr><th>Lesson Amount</th><td>₦{{ number_format($salary->lesson_amount, 2) }}</td></tr>
             <tr><th>Health Allowance</th><td>₦{{ number_format($salary->health, 2) }}</td></tr>
             <tr><th>Loan Repayment</th><td>₦{{ number_format($salary->loan_repayment, 2) }}</td></tr>
+            <tr><th>Tax</th><td>₦{{ number_format($salary->tax_deduction, 2) }}</td></tr>
+            <tr><th>Social</th><td>₦{{ number_format($salary->social_deduction, 2) }}</td></tr>
         </table>
+
+        @php
+            $totalDeductions = ($salary->loan_repayment ?? 0)
+                            + ($salary->tax_deduction ?? 0)
+                            + ($salary->social_deduction ?? 0);
+        @endphp
 
         <div class="summary">
             <p><strong>Net Pay:</strong> ₦{{ number_format($salary->net_pay, 2) }}</p>
+            <p><strong>Deductions:</strong> ₦{{ number_format($totalDeductions, 2) }}</p>
             <p><strong>Gross Pay:</strong> ₦{{ number_format($salary->gross, 2) }}</p>
             <p><strong>Status:</strong> 
                 <span class="status-{{ $salary->status == 'paid' ? 'paid' : 'pending' }}">

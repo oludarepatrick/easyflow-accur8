@@ -197,7 +197,7 @@ public function store(Request $request, $studentId)
         } catch (\Exception $e) {
             \Log::error('Receipt email exception: ' . $e->getMessage());
             \Log::error($e->getTraceAsString());
-            dd('Exception: ' . $e->getMessage());
+            //dd('Exception: ' . $e->getMessage());
         }
     }
 

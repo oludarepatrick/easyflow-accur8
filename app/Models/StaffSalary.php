@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class StaffSalary extends Model
 {
@@ -22,6 +24,8 @@ class StaffSalary extends Model
         'year',
         'status',
         'date_paid',
+        'tax_deduction',
+        'social_deduction',
     ];
 
     protected $casts = [
@@ -34,5 +38,6 @@ class StaffSalary extends Model
     {
         return $this->belongsTo(User::class, 'staff_id');
     }
+    
 }
    

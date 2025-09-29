@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Salary;
+use App\Models\StaffSalary;
 use App\Models\StudentReceipts;
 use App\Models\StudentPayments;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,7 @@ class AdminDashboardController extends Controller
         ->sum('total_amount');
 
     // ✅ Total salary paid (sum of net_pay for paid salaries)
-    $totalSalary = Salary::where('status', 'paid')
+    $totalSalary = StaffSalary::where('status', 'paid')
         ->sum('net_pay');
 
     // ✅ 3 most recent invoices (include student relationship)

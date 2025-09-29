@@ -149,8 +149,10 @@
                             <th>Status</th>
                             <th>Basic</th>
                             <th>Bonus</th>
-                            <th>Loan Deduct</th>
-                            <th>Health Allowance</th>
+                            <th>Loan</th>
+                            <th>Tax</th>
+                            <th>Social</th>
+                            <th>Health</th>
                             <th>Lesson</th>
                             <th>Net Pay</th>
                             <th>Gross Pay</th>
@@ -173,6 +175,8 @@
                                 <td>₦{{ number_format($salary->loan_repayment, 2) }}</td>
                                 <td>₦{{ number_format($salary->health, 2) }}</td>
                                 <td>₦{{ number_format($salary->lesson_amount, 2) }}</td>
+                                <td>₦{{ number_format($salary->tax_deduction, 2) }}</td>
+                                <td>₦{{ number_format($salary->social_deduction, 2) }}</td>
                                 <td>₦{{ number_format($salary->net_pay, 2) }}</td>
                                 <td>₦{{ number_format($salary->gross, 2) }}</td>
                                 <td>{{ $salary->date_paid ?? '---' }}</td>
@@ -274,6 +278,15 @@
                     <!-- Lesson -->
                     <div class="col-md-2">
                         <input name="lesson_amount" type="number" step="0.01" class="form-control" placeholder="Lesson Amount">
+                    </div>
+                    <!-- Tax Deduction -->
+                    <div class="col-md-2">
+                        <input name="tax_deduction" type="number" step="0.01" class="form-control" placeholder="Tax Deduction">
+                    </div>
+
+                    <!-- Social -->
+                    <div class="col-md-2">
+                        <input name="social_deduction" type="number" step="0.01" class="form-control" placeholder="Social">
                     </div>
 
                     <!-- Date Paid -->
