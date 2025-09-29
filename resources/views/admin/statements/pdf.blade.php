@@ -46,22 +46,24 @@
     </thead>
     <tbody>
       @foreach($payments as $idx => $p)
-      <tr>
-        <td>{{ $idx + 1 }}</td>
-        <td>{{ optional($p->payment_date)->format('d M Y, h:i A') }}</td>
-        <td>{{ $p->receipt->student->firstname }} {{ $p->receipt->student->lastname }}</td>
-        <td>{{ $p->receipt->student->class }}</td>
-        <td>{{ $p->receipt->term }}</td>
-        <td>{{ $p->receipt->session }}</td>
-        <td class="right">₦{{ number_format($p->amount_paid, 2) }}</td>
-        <td>{{ ucfirst($p->payment_method) }}</td>
-      </tr>
+        <tr>
+          <td>{{ $idx + 1 }}</td>
+          <td>{{ optional($p->payment_date)->format('d M Y, h:i A') }}</td>
+          <td>{{ optional($p->receipt->student)->firstname }} {{ optional($p->receipt->student)->lastname }}</td>
+          <td>{{ optional($p->receipt->student)->class }}</td>
+          <td>{{ optional($p->receipt)->term }}</td>
+          <td>{{ optional($p->receipt)->session }}</td>
+          <td class="right">₦{{ number_format($p->amount_paid, 2) }}</td>
+          <td>{{ ucfirst($p->payment_method) }}</td>
+        </tr>
       @endforeach
+
       <tr>
         <td colspan="6" class="right"><strong>Total</strong></td>
         <td class="right"><strong>₦{{ number_format($total, 2) }}</strong></td>
         <td></td>
       </tr>
+
     </tbody>
   </table>
 </body>

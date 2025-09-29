@@ -63,16 +63,16 @@
                     </thead>
                     <tbody>
                         @foreach($payments as $p)
-                        <tr>
-                            <td>{{ $loop->iteration + (($payments->currentPage()-1) * $payments->perPage()) }}</td>
-                            <td>{{ optional($p->payment_date)->format('d M Y, h:i A') }}</td>
-                            <td>{{ $p->receipt->student->firstname }} {{ $p->receipt->student->lastname }}</td>
-                            <td>{{ $p->receipt->student->class }}</td>
-                            <td>{{ $p->receipt->term }}</td>
-                            <td>{{ $p->receipt->session }}</td>
-                            <td>₦{{ number_format($p->amount_paid, 2) }}</td>
-                            <td>{{ ucfirst($p->payment_method) }}</td>
-                        </tr>
+                            <tr>
+                                <td>{{ $loop->iteration + (($payments->currentPage() - 1) * $payments->perPage()) }}</td>
+                                <td>{{ optional($p->payment_date)->format('d M Y, h:i A') }}</td>
+                                <td>{{ optional($p->receipt->student)->firstname }} {{ optional($p->receipt->student)->lastname }}</td>
+                                <td>{{ optional($p->receipt->student)->class }}</td>
+                                <td>{{ optional($p->receipt)->term }}</td>
+                                <td>{{ optional($p->receipt)->session }}</td>
+                                <td>₦{{ number_format($p->amount_paid, 2) }}</td>
+                                <td>{{ ucfirst($p->payment_method) }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
