@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReceiptMail;
-use App\Services\ZeptoMailService;
+use Illuminate\Validation\Rules;
+//use App\Services\ZeptoMailService;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class StudentReceiptController extends Controller
 {
