@@ -32,8 +32,7 @@ class AdminDashboardController extends Controller
 
     // ✅ Total revenue (sum of all paid invoices)
     // use total_amount since "amount" doesn’t exist anymore
-    $totalRevenue = Invoice::where('status', 'paid')
-        ->sum('total_amount');
+    $totalRevenue = StudentPayments::sum('amount_paid');
 
     // ✅ Total salary paid (sum of net_pay for paid salaries)
     $totalSalary = StaffSalary::where('status', 'paid')
@@ -46,17 +45,15 @@ class AdminDashboardController extends Controller
         ->take(3)
         ->get();
 
-    // ✅ Revenue comparison across terms
-    $termRevenue = Invoice::select('term', DB::raw('SUM(total_amount) as total'))
-        ->where('status', 'paid')
-        ->groupBy('term')
-        ->pluck('total', 'term');
+    $termRevenue = StudentReceipts::select('term', DB::raw('SUM(amount_paid) as total'))
+    ->groupBy('term')
+    ->pluck('total', 'term');
 
-    // ✅ Make sure all 3 terms are represented
+    // Normalize terms to your expected keys
     $chartData = [
-        'First Term'  => $termRevenue['first'] ?? 0,
-        'Second Term' => $termRevenue['second'] ?? 0,
-        'Third Term'  => $termRevenue['third'] ?? 0,
+        'First Term'  => $termRevenue['First Term'] ?? 0,
+        'Second Term' => $termRevenue['Second Term'] ?? 0,
+        'Third Term'  => $termRevenue['Third Term'] ?? 0,
     ];
 
     return view('dashboard.admin', [
