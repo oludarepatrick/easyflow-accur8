@@ -40,8 +40,8 @@ class AdminDashboardController extends Controller
 
     // ✅ 3 most recent invoices (include student relationship)
     
-        $recentInvoices = StudentPayments::with(['student'])
-        ->latest('payment_date') // or 'created_at' if that's your timestamp
+        $recentInvoices = StudentReceipts::with(['student'])
+        ->latest('updated_at') // or 'created_at' if that's your timestamp
         ->take(3)
         ->get();
 
