@@ -54,16 +54,16 @@
                 @forelse($receipts as $receipt)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $receipt->student->firstname }} {{ $receipt->student->lastname }}</td>
-                        <td>{{ $receipt->student->class }}</td>
+                        <td>{{ optional($receipt->student)->firstname }} {{ optional($receipt->student)->lastname }}</td>
+                        <td>{{ optional($receipt->student)->class }}</td>
                         <td>{{ $receipt->term }}</td>
                         <td>{{ $receipt->session }}</td>
                         <td>₦{{ number_format($receipt->total_expected) }}</td>
                         <td class="text-success">₦{{ number_format($receipt->amount_paid) }}</td>
                         <td class="text-danger fw-bold">₦{{ number_format($receipt->amount_due) }}</td>
                         <td>
-                            @if($receipt->payments->isNotEmpty())
-                                {{ $receipt->payments->last()->payment_date->format('d M Y') }}
+                            @if($receipt->payments->isNotEmpty() && $receipt->payments->last()->payment_date)
+                                {{ \Carbon\Carbon::parse($receipt->payments->last()->payment_date)->format('d M Y') }}
                             @else
                                 <span class="badge bg-warning">No Payment</span>
                             @endif
