@@ -156,16 +156,17 @@
                             <th>Social</th>
                             <th>Health</th>
                             <th>Lesson</th>
-                            <th>Net Pay</th>
-                            <th>Gross Pay</th>
-                            <th>Date Paid</th>
+                            <th>NetPay</th>
+                            <th>GrossPay</th>
+                            <th>Edit</th>
+                            <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($salaries as $salary)
                             <tr>
-                                <td>{{ date("F", mktime(0,0,0,$salary->month,1)) }}</td>
+                                <td>{{ date("M", mktime(0,0,0,$salary->month,1)) }}</td>
                                 <td>{{ $salary->year }}</td>
                                 <td>
                                     <span class="badge bg-{{ $salary->status == 'paid' ? 'success' : 'warning' }}">
@@ -181,7 +182,17 @@
                                 <td>₦{{ number_format($salary->social_deduction, 2) }}</td>
                                 <td>₦{{ number_format($salary->net_pay, 2) }}</td>
                                 <td>₦{{ number_format($salary->gross, 2) }}</td>
-                                <td>{{ $salary->date_paid ?? '---' }}</td>
+                                <td>
+                                    <button 
+                                        class="btn btn-sm btn-warning custom-edit" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editSalaryModal{{ $salary->id }}"
+                                        title="Edit Salary">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+
+                                <td>{{ $salary->date_paid ? \Carbon\Carbon::parse($salary->date_paid)->format('M d') : '---' }}</td>
                                 <td class="text-nowrap">
 
                                     {{-- Download Payslip --}}
@@ -227,6 +238,65 @@
                                 </td>
 
                             </tr>
+                            <!-- Edit Salary Modal -->
+<div class="modal fade" id="editSalaryModal{{ $salary->id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('staff.salary.update', $salary->id) }}">
+        @csrf
+        @method('PUT')
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title">Edit Salary - {{ $staff->firstname }} {{ $staff->lastname }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body row g-3">
+            <div class="col-md-4">
+                <label>Basic</label>
+                <input type="number" step="0.01" name="basic" value="{{ $salary->basic }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Bonus</label>
+                <input type="number" step="0.01" name="bonus" value="{{ $salary->bonus }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Loan Repayment</label>
+                <input type="number" step="0.01" name="loan_repayment" value="{{ $salary->loan_repayment }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Tax Deduction</label>
+                <input type="number" step="0.01" name="tax_deduction" value="{{ $salary->tax_deduction }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Social Deduction</label>
+                <input type="number" step="0.01" name="social_deduction" value="{{ $salary->social_deduction }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Health</label>
+                <input type="number" step="0.01" name="health" value="{{ $salary->health }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Lesson Amount</label>
+                <input type="number" step="0.01" name="lesson_amount" value="{{ $salary->lesson_amount }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>Status</label>
+                <select name="status" class="form-select">
+                    <option value="pending" {{ $salary->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="paid" {{ $salary->status == 'paid' ? 'selected' : '' }}>Paid</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Date Paid</label>
+                <input type="date" name="date_paid" value="{{ $salary->date_paid }}" required class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
                         @empty
                             <tr>
                                 <td colspan="11" class="text-center text-muted">No salary records found</td>
@@ -234,6 +304,9 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                
+
             </div>
 
             <h5 class="fw-bold mt-4">Add Salary</h5>

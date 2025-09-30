@@ -145,9 +145,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/salary/{id}/download', [StaffController::class, 'downloadPayslip'])->name('salary.download');
     Route::get('/salary/{id}/email', [StaffController::class, 'emailPayslip'])->name('salary.email');
     Route::patch('/salary/{id}/mark-paid', [StaffController::class, 'markAsPaid'])->name('salary.markPaid');
-    Route::delete('/staff/salary/{id}/delete', [StaffController::class, 'deleteSalary'])
-    ->name('staff.salary.delete');
-
+    Route::delete('/staff/salary/{id}/delete', [StaffController::class, 'deleteSalary'])->name('staff.salary.delete');
+    Route::put('/salary/{id}/update', [StaffController::class, 'updateSalary'])->name('staff.salary.update');
     Route::get('/staff/salary-statement', [StaffController::class, 'salaryStatement'])->name('staff.salary.statement');
     Route::get('/staff/salary-statement/download', [StaffController::class, 'downloadSalaryStatement'])->name('staff.salary.statement.download');
     Route::post('/staff/salary-statement/email', [StaffController::class, 'emailSalaryStatement'])->name('staff.salary.statement.email');

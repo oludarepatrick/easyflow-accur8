@@ -389,5 +389,30 @@ public function deleteSalary($id)
 
     return redirect()->back()->with('success', 'Salary record deleted successfully.');
 }
+
+public function editSalary($id)
+{
+    $salary = StaffSalary::findOrFail($id);
+    return view('staff.edit_salary', compact('salary'));
+}
+
+public function updateSalary(Request $request, $id)
+{
+    $salary = StaffSalary::findOrFail($id);
+
+    $salary->update($request->only([
+        'basic',
+        'bonus',
+        'loan_repayment',
+        'tax_deduction',
+        'social_deduction',
+        'health',
+        'lesson_amount',
+        'status',
+        'date_paid',
+    ]));
+
+    return back()->with('success', 'Salary record updated successfully.');
+}
     
 }
