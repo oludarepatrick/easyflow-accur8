@@ -414,5 +414,92 @@ public function updateSalary(Request $request, $id)
 
     return back()->with('success', 'Salary record updated successfully.');
 }
+
+public function payoutList(Request $request)
+{
+    $month = $request->input('month', date('m'));
+
+    $staffs = User::where('category', 'staff')
+        ->where('status', 'active')
+        ->with(['bankDetail', 'salaries' => function ($q) use ($month) {
+            $q->where('month', $month);
+        }])
+        ->get();
+
+    $months = StaffSalary::select('month')->distinct()->pluck('month');
+
+    return view('admin.staff.payout-list', compact('staffs', 'months', 'month'));
+}
+
+public function downloadPayoutList(Request $request)
+{
+    $month = $request->input('month', date('m'));
+    $school = School::first();
+
+    $staffs = User::where('category', 'staff')
+        ->where('status', 'active')
+        ->with(['bankDetail', 'salaries' => function ($q) use ($month) {
+            $q->where('month', $month);
+        }])
+        ->get();
+
+    $pdf = PDF::loadView('admin.staff.payout-pdf', compact('staffs', 'school', 'month'));
+    return $pdf->download("payout_list_{$month}.pdf");
+}
+
+public function emailPayoutList(Request $request)
+{
+    $request->validate([
+        'name'  => 'required|string',
+        'email' => 'required|email',
+        'month' => 'required'
+    ]);
+
+    $month = $request->month;
+    $school = School::first();
+
+    $staffs = User::where('category', 'staff')
+        ->where('status', 'active')
+        ->with(['bankDetail', 'salaries' => function ($q) use ($month) {
+            $q->where('month', $month);
+        }])
+        ->get();
+
+    $pdf = PDF::loadView('admin.staff.payout-pdf', compact('staffs', 'school', 'month'))->output();
+
+    $response = Http::withoutVerifying()
+        ->withHeaders([
+            'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
+            'accept'        => 'application/json',
+            'content-type'  => 'application/json',
+        ])->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
+            "template_key" => "email-payout-list",
+            "from" => [
+                "address" => "development@leverpay.io",
+                "name"    => $school->schoolname ?? "School Payroll"
+            ],
+            "to" => [
+                ["email_address" => ["address" => $request->email]]
+            ],
+            "merge_info" => [
+                "firstname" => $request->name,
+                "month"     => date("F", mktime(0,0,0,$month,1)),
+                "year"      => date('Y'),
+            ],
+            "attachments" => [
+                [
+                    "name"      => "payout-list-{$month}.pdf",
+                    "mime_type" => "application/pdf",
+                    "content"   => base64_encode($pdf)
+                ]
+            ]
+        ]);
+
+    if ($response->failed()) {
+        return back()->with('error', 'Failed to send payout list: ' . $response->body());
+    }
+
+    return back()->with('success', 'Payout list sent successfully!');
+}
     
 }

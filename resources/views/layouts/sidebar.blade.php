@@ -65,6 +65,11 @@
                                     <i class="bi bi-file-text"></i> Salary Statement
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('staff.payouts') }}" class="nav-link">
+                                    <i class="bi bi-file-text"></i> Payout List
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

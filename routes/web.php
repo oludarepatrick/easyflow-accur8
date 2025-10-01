@@ -130,6 +130,8 @@ Route::middleware(['auth:admin','role:admin'])->prefix('admin')->group(function 
     Route::get('/reports/owing-students', [StatementController::class, 'owingReport'])->name('reports.owing-students');
     Route::get('/reports/owing-students/pdf', [StatementController::class, 'owingStudentsPdf'])->name('reports.owing-students.pdf');
 
+    
+
 });
 
 Route::prefix('admin')->group(function () {
@@ -151,6 +153,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/staff/salary-statement/download', [StaffController::class, 'downloadSalaryStatement'])->name('staff.salary.statement.download');
     Route::post('/staff/salary-statement/email', [StaffController::class, 'emailSalaryStatement'])->name('staff.salary.statement.email');
    
+    Route::get('/staff/payouts', [StaffController::class, 'payoutList'])->name('staff.payouts');
+    Route::get('/staff/payouts/download', [StaffController::class, 'downloadPayoutList'])->name('staff.payouts.download');
+    Route::post('/staff/payouts/email', [StaffController::class, 'emailPayoutList'])->name('staff.payouts.email');
 });
 
 //Check Clerk and then allow access to clerk dashboard
