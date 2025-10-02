@@ -98,7 +98,7 @@ class User extends Authenticatable
 
     public function salaries()
     {
-        return $this->hasMany(StaffSalary::class, 'staff_id');
+        return $this->hasOne(StaffSalary::class, 'staff_id');
     }
 
 }

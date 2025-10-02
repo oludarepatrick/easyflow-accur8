@@ -60,7 +60,7 @@
                         <td>{{ $staff->bankDetail->bank_name ?? '---' }}</td>
                         <td>{{ $staff->bankDetail->account_no ?? '---' }}</td>
                         <td>{{ $staff->bankDetail->account_name ?? '---' }}</td>
-                        <td>₦{{ number_format(optional($staff->salaries->first())->gross ?? 0, 2) }}</td>
+                        <td>₦{{ number_format(optional($staff->salaries)->gross ?? 0, 2) }}</td>
 
                     </tr>
                 @empty

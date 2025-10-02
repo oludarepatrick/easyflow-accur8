@@ -49,15 +49,15 @@
                     <h5 class="card-title">Recent Payments</h5>
                     <div class="list-group list-group-flush">
                         @foreach($recentInvoices as $invoice)
-                            <div class="list-group-item">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ $invoice->student->firstname ?? 'Unknown' }}</h6>
-                                    <small>{{ $invoice->created_at->diffForHumans() }}</small>
-                                </div>
-                                <p class="mb-1">Term {{ ucfirst($invoice->term) }} Fees</p>
-                                <small class="text-success">₦{{ number_format($invoice->amount_paid, 2) }}</small>
-                            </div>
-                        @endforeach
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">{{ $invoice->student->firstname ?? 'Unknown' }}</h6>
+                                                <small>{{ $invoice->created_at->diffForHumans() }}</small>
+                                            </div>
+                                            <p class="mb-1">Term {{ ucfirst($invoice->term) }} Fees</p>
+                                            <small class="text-success">#{{ number_format($invoice->amount_paid, 2) }}</small>
+                                        </div>
+                         @endforeach
                     </div>
                 </div>
             </div>

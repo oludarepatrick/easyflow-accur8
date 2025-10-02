@@ -419,7 +419,7 @@ public function payoutList(Request $request)
 {
     $month = $request->input('month', date('m'));
 
-    $staffs = User::where('category', 'staff')
+        $staffs = User::where('category', 'staff')
         ->where('status', 'active')
         ->with(['bankDetail', 'salaries' => function ($q) use ($month) {
             $q->where('month', $month);
