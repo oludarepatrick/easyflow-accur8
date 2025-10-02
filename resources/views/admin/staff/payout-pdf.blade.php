@@ -60,7 +60,7 @@
 
     @php
         $totalPayout = $staffs->sum(function($staff) {
-            return optional($staff->salaries->first())->gross ?? 0;
+            return optional($staff->salaries)->gross ?? 0;
         });
     @endphp
 
