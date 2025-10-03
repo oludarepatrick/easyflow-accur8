@@ -22,28 +22,43 @@ class CustomRegisterController extends Controller
     public function store(Request $request)
 {
     $validated = $request->validate([
-        'firstname' => 'required|string|max:255',
-        'lastname'  => 'required|string|max:255',
-        'email' => 'required|string|email|max:255',
-        'phone'     => 'nullable|string',
-        'category'  => 'required|in:student,staff',
-        'class'     => 'required_if:category,student|nullable|string|max:50',
-    ]);
+    'firstname'    => 'required|string|max:255',
+    'lastname'     => 'required|string|max:255',
+    'email'        => 'required|string|email|max:255|unique:users,email',
+    'phone'        => 'nullable|string',
+    'category'     => 'required|in:student,staff',
+    'class'        => 'required_if:category,student|nullable|string|max:50',
+    'school_type'  => 'nullable|string|in:primary,secondary',
+    'account_name' => 'required_if:category,staff|nullable|string|max:255',
+    'account_no'   => 'required_if:category,staff|nullable|string|max:50',
+    'bank_name'    => 'required_if:category,staff|nullable|string|max:255',
+]);
 
-    // Fetch school term & session from settings table
-    $settings = School::first();
+// Fetch school term & session from settings table
+$settings = School::first();
 
-    $user = User::create([
-        'firstname' => $validated['firstname'],
-        'lastname'  => $validated['lastname'],
-        'email'     => $validated['email'],
-        'phone'     => $validated['phone'] ?? null,
-        'category'  => $validated['category'],
-        'class'     => $validated['category'] === 'student' ? $validated['class'] : null,
-        'term'      => $settings->term ?? null,
-        'session'   => $settings->session ?? null,
-        'status'    => 'active',
+$user = User::create([
+    'firstname'  => $validated['firstname'],
+    'lastname'   => $validated['lastname'],
+    'email'      => $validated['email'],
+    'phone'      => $validated['phone'] ?? null,
+    'category'   => $validated['category'],
+    'class'      => $validated['category'] === 'student' ? $validated['class'] : null,
+    'schooltype' => $validated['category'] === 'staff' ? $validated['school_type'] : null,
+    'term'       => $settings->term ?? null,
+    'session'    => $settings->session ?? null,
+    'status'     => 'active',
+]);
+
+// If staff, save bank details
+if ($validated['category'] === 'staff') {
+    \App\Models\StaffBankDetail::create([
+        'staff_id'     => $user->id,
+        'account_name' => $validated['account_name'],
+        'account_no'   => $validated['account_no'],
+        'bank_name'    => $validated['bank_name'],
     ]);
+}
 
     $mergeData = [
         'firstname' => $user->firstname,

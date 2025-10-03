@@ -98,6 +98,46 @@
                         @enderror
                     </div>
 
+                    {{-- Staff-only fields --}}
+                    <div class="mb-3 slide-toggle" id="staffFields" style="display:none;">
+                        {{-- Bank Name --}}
+                        <label for="bank_name" class="form-label">Bank Name</label>
+                        <input type="text" class="form-control form-control-lg shadow-sm custom-rounded @error('bank_name') is-invalid @enderror"
+                            id="bank_name" name="bank_name" value="{{ old('bank_name') }}">
+                        @error('bank_name')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
+
+                        {{-- Account Number --}}
+                        <label for="account_no" class="form-label mt-3">Account Number</label>
+                        <input type="text" class="form-control form-control-lg shadow-sm custom-rounded2 @error('account_no') is-invalid @enderror"
+                            id="account_no" name="account_no" value="{{ old('account_no') }}">
+                        @error('account_no')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
+
+                        {{-- Account Name --}}
+                        <label for="account_name" class="form-label mt-3">Account Name</label>
+                        <input type="text" class="form-control form-control-lg shadow-sm custom-rounded3 @error('account_name') is-invalid @enderror"
+                            id="account_name" name="account_name" value="{{ old('account_name') }}">
+                        @error('account_name')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
+
+                        {{-- School Type --}}
+                        <label for="school_type" class="form-label mt-3">School Type</label>
+                        <select class="form-select form-select-lg shadow-sm custom-rounded4 @error('school_type') is-invalid @enderror"
+                                id="school_type" name="school_type">
+                            <option value="">-- Select Type --</option>
+                            <option value="primary" {{ old('school_type')=='primary' ? 'selected':'' }}>Primary</option>
+                            <option value="secondary" {{ old('school_type')=='secondary' ? 'selected':'' }}>Secondary</option>
+                        </select>
+                        @error('school_type')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+
                     {{-- Buttons --}}
                     <div class="d-flex justify-content-center mt-4">
                         <button type="submit" 
@@ -123,19 +163,27 @@
 <script>
     const categorySelect = document.getElementById('category');
     const classDiv = document.getElementById('classDiv');
+    const staffFields = document.getElementById('staffFields');
 
-    function toggleClassField() {
+    function toggleFields() {
         if (categorySelect.value === 'student') {
             classDiv.style.display = 'block';
+            staffFields.style.display = 'none';
             classDiv.classList.add('fade-in-up');
+        } else if (categorySelect.value === 'staff') {
+            staffFields.style.display = 'block';
+            classDiv.style.display = 'none';
+            staffFields.classList.add('fade-in-up');
         } else {
             classDiv.style.display = 'none';
+            staffFields.style.display = 'none';
         }
     }
 
-    categorySelect.addEventListener('change', toggleClassField);
-    window.addEventListener('DOMContentLoaded', toggleClassField);
+    categorySelect.addEventListener('change', toggleFields);
+    window.addEventListener('DOMContentLoaded', toggleFields);
 </script>
+
 <style>
     .custom-logo {
         width: 20px !important;

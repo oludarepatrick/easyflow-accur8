@@ -31,6 +31,7 @@ class User extends Authenticatable
         'session',
         'role',
         'category',
+        'schooltype',
         'status',
         
 
