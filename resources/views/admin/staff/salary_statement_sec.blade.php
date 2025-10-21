@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Staff Salary Statement Primary')
+@section('title', 'Staff Salary Statement Secondary')
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h4>Staff Salary Statement Primary</h4>
+        <h4>Staff Salary Statement Secondary</h4>
     </div>
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -14,7 +14,7 @@
     </div>
 @endif
     <div class="card-body">
-        <form method="GET" action="{{ route('staff.salary.statement') }}" class="form-inline mb-3">
+        <form method="GET" action="{{ route('staff.salary.statement_sec') }}" class="form-inline mb-3">
             <select name="month" class="form-control mr-2">
                 <option value="">-- Select Month --</option>
                 @for ($m=1; $m<=12; $m++)
@@ -37,7 +37,7 @@
         </form>
 
         <div class="mb-3">
-            <a href="{{ route('staff.salary.statement.download', request()->all()) }}" class="btn btn-success">Download PDF</a>
+            <a href="{{ route('staff.salary.statement.download_sec', request()->all()) }}" class="btn btn-success">Download PDF</a>
             <!-- Trigger button -->
             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#sendStatementModal">
                 Send Statement
@@ -82,7 +82,7 @@
     <!-- Modal -->
     <div class="modal fade" id="sendStatementModal" tabindex="-1" aria-labelledby="sendStatementLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
-        <form method="POST" action="{{ route('staff.salary.statement.email') }}">
+        <form method="POST" action="{{ route('staff.salary.statement.email_sec') }}">
           @csrf
           <div class="modal-content">
             <div class="modal-header">

@@ -1,4 +1,4 @@
-<h3>Staff Salary Statement Primary - {{ $month ? date('F', mktime(0,0,0,$month,1)) : '' }} {{ $year }}</h3>
+<h3>Staff Salary Statement Secondary - {{ $month ? date('F', mktime(0,0,0,$month,1)) : '' }} {{ $year }}</h3>
 
 <table width="100%" border="1" cellspacing="0" cellpadding="5">
     <thead>

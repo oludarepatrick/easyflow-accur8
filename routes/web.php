@@ -150,8 +150,11 @@ Route::prefix('admin')->group(function () {
     Route::delete('/staff/salary/{id}/delete', [StaffController::class, 'deleteSalary'])->name('staff.salary.delete');
     Route::put('/salary/{id}/update', [StaffController::class, 'updateSalary'])->name('staff.salary.update');
     Route::get('/staff/salary-statement', [StaffController::class, 'salaryStatement'])->name('staff.salary.statement');
+    Route::get('/staff/salary-statement_sec', [StaffController::class, 'salaryStatementSec'])->name('staff.salary.statement_sec');
     Route::get('/staff/salary-statement/download', [StaffController::class, 'downloadSalaryStatement'])->name('staff.salary.statement.download');
     Route::post('/staff/salary-statement/email', [StaffController::class, 'emailSalaryStatement'])->name('staff.salary.statement.email');
+    Route::get('/staff/salary-statement/download_sec', [StaffController::class, 'downloadSalaryStatementSec'])->name('staff.salary.statement.download_sec');
+    Route::post('/staff/salary-statement/email_sec', [StaffController::class, 'emailSalaryStatementSec'])->name('staff.salary.statement.email_sec');
    
     Route::get('/staff/payouts', [StaffController::class, 'payoutList'])->name('staff.payouts');
     Route::get('/staff/payouts/download', [StaffController::class, 'downloadPayoutList'])->name('staff.payouts.download');

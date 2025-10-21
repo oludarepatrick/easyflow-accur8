@@ -97,6 +97,15 @@
                                     <option value="SSS 3" {{ $staff->class == 'SSS 3' ? 'selected' : '' }}>SSS 3</option>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">School Type</label>
+                                <select name="schooltype" class="form-select">
+                                    <option value="">-- Select Primary|Secondary --</option>
+                                    <option value="primary" {{ $staff->schooltype == 'primary' ? 'selected' : '' }}>Primary</option>
+                                    <option value="secondary" {{ $staff->schooltype == 'secondary' ? 'selected' : '' }}>Secondary</option>
+                                    
+                                </select>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-3">

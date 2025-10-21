@@ -13,6 +13,7 @@
                 <th>Lastname</th>
                 <th>Email</th>
                 <th>Phone</th>
+                 <th>School</th>
                 <th>View</th>
                 <th>Deactivate</th>
                 <th>Delete</th>
@@ -25,6 +26,7 @@
                     <td>{{ $s->lastname }}</td>
                     <td>{{ $s->email }}</td>
                     <td>{{ $s->phone }}</td>
+                    <td>{{ $s->schooltype }}</td>
                     <td>
                         <a href="{{ route('staff.show', $s->id) }}" class="btn btn-info btn-sm">View</a>
                     </td>

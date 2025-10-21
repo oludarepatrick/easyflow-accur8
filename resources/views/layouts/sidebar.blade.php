@@ -62,7 +62,12 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('staff.salary.statement') }}" class="nav-link">
-                                    <i class="bi bi-file-text"></i> Salary Statement
+                                    <i class="bi bi-file-text"></i> Pry Salary Statement
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('staff.salary.statement_sec') }}" class="nav-link">
+                                    <i class="bi bi-file-text"></i> Sec Salary Statement
                                 </a>
                             </li>
                             <li class="nav-item">

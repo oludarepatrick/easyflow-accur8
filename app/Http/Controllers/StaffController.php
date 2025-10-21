@@ -70,6 +70,7 @@ class StaffController extends Controller
             'class'     => 'nullable|string|max:50',
             'phone'     => 'nullable|string|max:11',
             'email'     => 'nullable|string|max:50',
+            'schooltype' => 'nullable|string|max:50',
         ]);
 
         $staff = User::where('category','staff')->findOrFail($id);
@@ -78,6 +79,7 @@ class StaffController extends Controller
         $staff->class     = $request->class;
         $staff->phone     = $request->phone;
         $staff->email     = $request->email;
+        $staff->schooltype = $request->schooltype;
         $staff->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully.');
@@ -291,7 +293,10 @@ public function addSalary(Request $request, $id)
         $month = $request->input('month');
         $year  = $request->input('year');
 
-        $query = StaffSalary::with('staff') // relationship with User
+        $query = StaffSalary::with('staff') // load related user
+            ->whereHas('staff', function ($q) {
+                $q->where('schooltype', 'primary'); // filter by user's schooltype
+            })
             ->when($month, fn($q) => $q->where('month', $month))
             ->when($year, fn($q) => $q->where('year', $year))
             ->orderBy('month', 'asc');
@@ -301,12 +306,34 @@ public function addSalary(Request $request, $id)
         return view('admin.staff.salary_statement', compact('salaries', 'month', 'year'));
     }
 
+    public function salaryStatementSec(Request $request)
+    {
+        $month = $request->input('month');
+        $year  = $request->input('year');
+
+        $query = StaffSalary::with('staff') // load related user
+            ->whereHas('staff', function ($q) {
+                $q->where('schooltype', 'secondary'); // filter by user's schooltype
+            })
+            ->when($month, fn($q) => $q->where('month', $month))
+            ->when($year, fn($q) => $q->where('year', $year))
+            ->orderBy('month', 'asc');
+
+        $salaries = $query->get();
+
+        return view('admin.staff.salary_statement_sec', compact('salaries', 'month', 'year'));
+    }
+
+
     public function downloadSalaryStatement(Request $request)
     {
         $month = $request->input('month');
         $year  = $request->input('year');
 
         $salaries = StaffSalary::with('staff')
+        ->whereHas('staff', function ($q) {
+                $q->where('schooltype', 'primary'); // filter by user's schooltype
+            })
             ->when($month, fn($q) => $q->where('month', $month))
             ->when($year, fn($q) => $q->where('year', $year))
             ->orderBy('month', 'asc')
@@ -317,12 +344,34 @@ public function addSalary(Request $request, $id)
         return $pdf->download("staff_salary_statement_{$month}_{$year}.pdf");
     }
 
+    public function downloadSalaryStatementSec(Request $request)
+    {
+        $month = $request->input('month');
+        $year  = $request->input('year');
+
+        $salaries = StaffSalary::with('staff')
+        ->whereHas('staff', function ($q) {
+                $q->where('schooltype', 'secondary'); // filter by user's schooltype
+            })
+            ->when($month, fn($q) => $q->where('month', $month))
+            ->when($year, fn($q) => $q->where('year', $year))
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $pdf = PDF::loadView('admin.staff.salary_statement_sec_pdf', compact('salaries', 'month', 'year'));
+
+        return $pdf->download("staff_salary_statement_sec_{$month}_{$year}.pdf");
+    }
+
     public function emailSalaryStatement(Request $request)
 {
     $month = $request->input('month');
     $year  = $request->input('year');
 
     $salaries = StaffSalary::with('staff')
+    ->whereHas('staff', function ($q) {
+                $q->where('schooltype', 'primary'); // filter by user's schooltype
+            })
         ->when($month, fn($q) => $q->where('month', $month))
         ->when($year, fn($q) => $q->where('year', $year))
         ->get();
@@ -332,6 +381,74 @@ public function addSalary(Request $request, $id)
     }
 
     $pdf = \PDF::loadView('admin.staff.salary_statement_pdf', compact('salaries', 'month', 'year'))->output();
+
+    // Total deductions
+    $totalDeductions = ($request->loan_repayment ?? 0) 
+                    + ($request->tax_deduction ?? 0) 
+                    + ($request->social_deduction ?? 0);
+
+    $total = $salaries->sum('gross'); // total gross in this period
+    $totalnet = $salaries->sum('net_pay'); // total netpay in this period
+    //$totalDeductions = $salaries->sum('totalDeductions'); // total gross in this period
+    $school = \App\Models\School::first();
+
+    // Send using ZeptoMail template API
+    $response = Http::withoutVerifying()
+        ->withHeaders([
+            'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
+            'accept'        => 'application/json',
+            'content-type'  => 'application/json',
+        ])->timeout(30)
+        ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
+            "template_key" => "email-staff-statement",
+            "from" => [
+                "address" => "development@leverpay.io", // must be verified
+                "name"    => $school->schoolname ?? 'School'
+            ],
+            "to" => [
+                ["email_address" => ["address" => $request->email]]
+            ],
+            "merge_info" => [
+                "firstname" => $request->firstname ?? '',
+                "month"      => $request->input('month') ?? '',
+                "year"   => $request->input('year') ?? '',
+                "totalnet"     => number_format($totalnet, 2),
+                "total"     => number_format($total, 2),
+            ],
+            "attachments" => [
+                [
+                    "name"      => "staff-statement-{$month}-{$year}.pdf",
+                    "mime_type" => "application/pdf",
+                    "content"   => base64_encode($pdf)
+                ]
+            ]
+        ]);
+
+    if ($response->failed()) {
+        return back()->with('error', 'Failed to send statement: ' . $response->body());
+    }
+
+    return back()->with('success', 'Salary statement emailed successfully.');
+}
+
+public function emailSalaryStatementSec(Request $request)
+{
+    $month = $request->input('month');
+    $year  = $request->input('year');
+
+    $salaries = StaffSalary::with('staff')
+    ->whereHas('staff', function ($q) {
+                $q->where('schooltype', 'secondary'); // filter by user's schooltype
+            })
+        ->when($month, fn($q) => $q->where('month', $month))
+        ->when($year, fn($q) => $q->where('year', $year))
+        ->get();
+
+    if ($salaries->isEmpty()) {
+        return back()->with('error', 'No salary records found for this period.');
+    }
+
+    $pdf = \PDF::loadView('admin.staff.salary_statement_sec_pdf', compact('salaries', 'month', 'year'))->output();
 
     // Total deductions
     $totalDeductions = ($request->loan_repayment ?? 0) 
