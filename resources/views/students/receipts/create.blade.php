@@ -9,7 +9,7 @@
 
         <div class="mb-3">
             <label>Total Expected (Auto from fees setup)</label>
-            <input type="text" name="total_expected" class="form-control" value="{{ $expectedFees->total ?? 0 }}" readonly>
+            <input type="text" name="total_expected" class="form-control" value="{{ $expectedFees->total ?? 0 }}" >
         </div>
 
         <div class="mb-3">
