@@ -34,6 +34,16 @@ class AdminDashboardController extends Controller
     // use total_amount since "amount" doesn’t exist anymore
     $totalRevenue = StudentPayments::sum('amount_paid');
 
+    $totalRevenuePry = StudentPayments::whereHas('user', function ($query) {
+    $query->where('schooltype', 'primary')
+            ->where('category', 'student');
+    })->sum('amount_paid');
+
+    $totalRevenueSec = StudentPayments::whereHas('user', function ($query) {
+    $query->where('schooltype', 'secondary')
+            ->where('category', 'student');
+    })->sum('amount_paid');
+
     // ✅ Total salary paid (sum of net_pay for paid salaries)
     $totalSalary = StaffSalary::where('status', 'paid')
         ->sum('net_pay');
@@ -60,6 +70,8 @@ class AdminDashboardController extends Controller
         'activeStudents' => $activeStudents,
         'activeStaff'    => $activeStaff,
         'totalRevenue'   => $totalRevenue,
+        'totalRevenuePry'   => $totalRevenuePry,
+        'totalRevenueSec'   => $totalRevenueSec,
         'totalSalary'    => $totalSalary,
         'recentInvoices' => $recentInvoices,
         'chartData'      => $chartData,

@@ -74,7 +74,7 @@ public function store(Request $request, $studentId)
             'uniform'        => 0,
             'exam_fee'       => 0,
             'discount'       => $request->discount ?? 0,
-            'total_expected' => $totalExpected,
+            'total_expected' => $request->$totalExpected,
             'amount_paid'    => 0, // initialize
             'amount_due'     => $totalExpected - ($request->discount ?? 0),
         ]);

@@ -90,7 +90,12 @@
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.statements.payments') }}">
-                                    <i class="bi bi-file-text"></i> Payment Statement
+                                    <i class="bi bi-file-text"></i> Pry Pay Statement
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.statements.sec_payments') }}">
+                                    <i class="bi bi-file-text"></i> Sec Pay Statement
                                 </a>
                             </li>
                             <li class="nav-item">

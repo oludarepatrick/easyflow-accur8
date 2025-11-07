@@ -65,6 +65,19 @@
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                    {{-- School Type --}}
+                        <label for="school_type" class="form-label mt-3">School Type</label>
+                        <select class="form-select form-select-lg shadow-sm custom-rounded4 @error('school_type') is-invalid @enderror"
+                                id="school_type" name="school_type" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="primary" {{ old('school_type')=='primary' ? 'selected':'' }}>Primary</option>
+                            <option value="secondary" {{ old('school_type')=='secondary' ? 'selected':'' }}>Secondary</option>
+                        </select>
+                        @error('school_type')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
+                    </div>
 
                     {{-- Category --}}
                     <div class="mb-3">
@@ -124,17 +137,7 @@
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror
 
-                        {{-- School Type --}}
-                        <label for="school_type" class="form-label mt-3">School Type</label>
-                        <select class="form-select form-select-lg shadow-sm custom-rounded4 @error('school_type') is-invalid @enderror"
-                                id="school_type" name="school_type">
-                            <option value="">-- Select Type --</option>
-                            <option value="primary" {{ old('school_type')=='primary' ? 'selected':'' }}>Primary</option>
-                            <option value="secondary" {{ old('school_type')=='secondary' ? 'selected':'' }}>Secondary</option>
-                        </select>
-                        @error('school_type')
-                            <span class="text-danger small">{{ $message }}</span>
-                        @enderror
+                        
                     </div>
 
 

@@ -15,7 +15,7 @@
     <form method="GET" action="{{ route('students.index') }}" class="mb-3">
         <div class="input-group">
             <input type="text" name="search" value="{{ request('search') }}" 
-                   class="form-control" placeholder="Search by name or username...">
+                   class="form-control" placeholder="Search by name or username or schooltype...">
             <button class="btn btn-primary" type="submit">Search</button>
         </div>
     </form>
@@ -29,6 +29,7 @@
                     <th data-column="1">Firstname ▲</th>
                     <th data-column="2">Lastname ▲</th>
                     <th data-column="3">Class ▲</th>
+                    <th data-column="3">School ▲</th>
                     <th data-column="4">Status ▲</th>
                     <th data-column="5">Edit ▲</th>
                     <th data-column="6">Delete ▲</th>
@@ -44,6 +45,7 @@
                         <td>{{ $student->firstname }}</td>
                         <td>{{ $student->lastname }}</td>
                         <td>{{ $student->class }}</td>
+                        <td>{{ ucfirst($student->schooltype) }}</td>
                         <td><span class="badge bg-success">Active</span></td>
                         <td>
                             <!-- Edit Button -->

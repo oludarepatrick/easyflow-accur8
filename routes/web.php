@@ -125,11 +125,15 @@ Route::prefix('admin')->group(function () {
 
 Route::middleware(['auth:admin','role:admin'])->prefix('admin')->group(function () {
     Route::get('statements/payments', [StatementController::class, 'index'])->name('admin.statements.payments');
+    Route::get('statements/sec_payments', [StatementController::class, 'sec_index'])->name('admin.statements.sec_payments');
     Route::get('statements/payments/export/pdf', [StatementController::class, 'exportPdf'])->name('admin.statements.payments.pdf');
+    Route::get('statements/payments/export/sec_pdf', [StatementController::class, 'sec_exportPdf'])->name('admin.statements.payments.sec_pdf');
     Route::post('statements/payments/email', [StatementController::class, 'emailStatement'])->name('admin.statements.payments.email');
+    Route::post('statements/payments/sec_email', [StatementController::class, 'sec_emailStatement'])->name('admin.statements.payments.sec_email');
     Route::get('/reports/owing-students', [StatementController::class, 'owingReport'])->name('reports.owing-students');
+    Route::get('/reports/sec_owing-students', [StatementController::class, 'sec_owingReport'])->name('reports.sec_owing-students');
     Route::get('/reports/owing-students/pdf', [StatementController::class, 'owingStudentsPdf'])->name('reports.owing-students.pdf');
-
+    
     
 
 });

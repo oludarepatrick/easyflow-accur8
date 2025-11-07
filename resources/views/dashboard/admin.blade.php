@@ -47,8 +47,9 @@
                         <div class="card h-100 border-info">
                             <div class="card-body">
                                 <h6 class="card-title text-info">Total Revenue</h6>
-                                <h2 class="mt-3 mb-0">#{{ number_format($totalRevenue, 2) }}</h2>
-                                <p class="text-success mb-0"><i class="bi bi-arrow-up"></i> 8% increase</p>
+                                <h5 class="mt-3 mb-0">All: #{{ number_format($totalRevenue, 2) }}</h5>
+                                <h5 class="mt-3 mb-0">Pry: #{{ number_format($totalRevenuePry, 2) }}</h5>
+                                <h5 class="mt-3 mb-0">Sec: #{{ number_format($totalRevenueSec, 2) }}</h5>
                             </div>
                         </div>
                     </div>

@@ -44,7 +44,7 @@ $user = User::create([
     'phone'      => $validated['phone'] ?? null,
     'category'   => $validated['category'],
     'class'      => $validated['category'] === 'student' ? $validated['class'] : null,
-    'schooltype' => $validated['category'] === 'staff' ? $validated['school_type'] : null,
+    'schooltype' => $validated['school_type'] ?? null,
     'term'       => $settings->term ?? null,
     'session'    => $settings->session ?? null,
     'status'     => 'active',

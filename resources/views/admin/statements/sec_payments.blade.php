@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title','Primary Payments Statement')
+@section('title','Secondary Payments Statement')
 
 @section('content')
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Primary Student Payments Statement</h3>
+        <h3>Secondary Student Payments Statement</h3>
         <div>
-            <a href="{{ route('admin.statements.payments.pdf', request()->query()) }}" class="btn btn-outline-secondary me-1">
+            <a href="{{ route('admin.statements.payments.sec_pdf', request()->query()) }}" class="btn btn-outline-secondary me-1">
                 <i class="bi bi-file-earmark-pdf"></i> Download PDF
             </a>
             
@@ -93,7 +93,7 @@
 <!-- Email Modal -->
 <div class="modal fade" id="emailModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-sm">
-    <form method="POST" action="{{ route('admin.statements.payments.email') }}">
+    <form method="POST" action="{{ route('admin.statements.payments.sec_email') }}">
       @csrf
       <input type="hidden" name="term" value="{{ request('term') }}">
       <input type="hidden" name="session" value="{{ request('session') }}">
