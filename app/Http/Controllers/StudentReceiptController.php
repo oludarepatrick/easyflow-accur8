@@ -40,8 +40,7 @@ class StudentReceiptController extends Controller
     }
 
     // Store receipt
-   // Store receipt
-public function store(Request $request, $studentId)
+ public function store(Request $request, $studentId)
 {
     $student = User::findOrFail($studentId);
 
@@ -50,13 +49,16 @@ public function store(Request $request, $studentId)
     $currentSession = $school->session ?? null;
     $currentTerm    = $school->term ?? null;
 
-    // Get expected fee
+    // Get expected fee from SchoolFee table
     $expectedFee = SchoolFee::where('class', $student->class)
         ->where('term', $currentTerm)
         ->where('session', $currentSession)
         ->first();
 
-    $totalExpected = $expectedFee ? $expectedFee->total : 0;
+    // Use value from form if provided, otherwise fallback to system expected fee
+    $totalExpected = $request->filled('total_expected')
+        ? $request->total_expected
+        : ($expectedFee ? $expectedFee->total : 0);
 
     // Find existing receipt for this student/term/session
     $receipt = StudentReceipts::where('student_id', $student->id)
@@ -74,13 +76,13 @@ public function store(Request $request, $studentId)
             'uniform'        => 0,
             'exam_fee'       => 0,
             'discount'       => $request->discount ?? 0,
-            'total_expected' => $request->$totalExpected,
-            'amount_paid'    => 0, // initialize
+            'total_expected' => $totalExpected,
+            'amount_paid'    => 0,
             'amount_due'     => $totalExpected - ($request->discount ?? 0),
         ]);
     }
 
-    // ✅ Update specific column if this payment applies to it
+    // ✅ Update specific fee columns
     if ($request->filled('tuition')) {
         $receipt->increment('tuition', $request->tuition);
     }
@@ -108,6 +110,7 @@ public function store(Request $request, $studentId)
 
     return redirect()->route('students.index')->with('success', 'Payment recorded successfully!');
 }
+
 
 
 

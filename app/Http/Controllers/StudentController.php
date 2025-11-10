@@ -31,7 +31,7 @@ class StudentController extends Controller
             });
         }
 
-        $students = $query->paginate(10); // paginate results
+        $students = $query->paginate(20); // paginate results
 
         return view('students.index', compact('students', 'currentTerm', 'currentSession'));
     }
