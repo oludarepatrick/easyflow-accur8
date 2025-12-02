@@ -326,12 +326,19 @@ class StatementController extends Controller
 
         if ($request->has('download') && $request->download === 'pdf') {
             $school = \App\Models\School::first();
+
+            // Fix invalid filename by removing slashes
+            $cleanSession = str_replace(['/', '\\'], '-', $session);
+            $cleanTerm = str_replace(['/', '\\'], '-', $term);
+
             $pdf = \PDF::loadView(
                 'admin.statements.owing-pdf',
                 compact('receipts', 'school', 'term', 'session', 'totalPaid', 'totalDebt')
             );
-            return $pdf->download("owing_report_{$term}_{$session}.pdf");
+
+            return $pdf->download("owing_report_{$cleanTerm}_{$cleanSession}.pdf");
         }
+
 
         $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
         $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
