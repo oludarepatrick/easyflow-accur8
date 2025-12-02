@@ -81,7 +81,7 @@ if ($validated['category'] === 'staff') {
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 'template_key' => 'new-registration',
                 'from' => [
-                    'address' => 'development@leverpay.io',
+                    'address' => 'development@schooldrive.com.ng',
                     'name'    => 'School Admin'
                 ],
                 'to' => [
@@ -104,7 +104,7 @@ if ($validated['category'] === 'staff') {
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 'template_key' => 'onboarding-notice',
                 'from' => [
-                    'address' => 'development@leverpay.io',
+                    'address' => 'development@schooldrive.com.ng',
                     'name'    => 'School Management Team'
                 ],
                 'to' => [

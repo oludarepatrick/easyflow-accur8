@@ -168,7 +168,7 @@ class StudentReceiptController extends Controller
                 ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                     "template_key" => "mail-receipt", // <-- must match exactly in ZeptoMail
                     "from" => [
-                        "address" => "development@leverpay.io", // must be verified in ZeptoMail
+                        "address" => "development@schooldrive.com.ng", // must be verified in ZeptoMail
                         "name"    => "School Receipt"
                     ],
                     "to" => [
@@ -219,7 +219,7 @@ class StudentReceiptController extends Controller
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 "template_key" => "mail-reminder", // 👈 your reminder template
                 "from" => [
-                    "address" => "development@leverpay.io",
+                    "address" => "development@schooldrive.com.ng",
                     "name"    => "School Reminder"
                 ],
                 "to" => [

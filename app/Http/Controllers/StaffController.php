@@ -179,7 +179,7 @@ public function addSalary(Request $request, $id)
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 "template_key" => "salary-notification", // ✅ your ZeptoMail template
                 "from" => [
-                    "address" => "development@leverpay.io",
+                    "address" => "development@schooldrive.com.ng",
                     "name"    => "School Payroll"
                 ],
                 "to" => [
@@ -240,7 +240,7 @@ public function addSalary(Request $request, $id)
             ])->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 "template_key" => "salary-notification",
                 "from" => [
-                    "address" => "development@leverpay.io",
+                    "address" => "development@schooldrive.com.ng",
                     "name"    => $school->name ?? "School Payroll"
                 ],
                 "to" => [
@@ -402,7 +402,7 @@ public function addSalary(Request $request, $id)
         ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
             "template_key" => "email-staff-statement",
             "from" => [
-                "address" => "development@leverpay.io", // must be verified
+                "address" => "development@schooldrive.com.ng", // must be verified
                 "name"    => $school->schoolname ?? 'School'
             ],
             "to" => [
@@ -470,7 +470,7 @@ public function emailSalaryStatementSec(Request $request)
         ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
             "template_key" => "email-staff-statement",
             "from" => [
-                "address" => "development@leverpay.io", // must be verified
+                "address" => "development@schooldrive.com.ng", // must be verified
                 "name"    => $school->schoolname ?? 'School'
             ],
             "to" => [
@@ -592,7 +592,7 @@ public function emailPayoutList(Request $request)
         ])->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
             "template_key" => "email-payout-list",
             "from" => [
-                "address" => "development@leverpay.io",
+                "address" => "development@schooldrive.com.ng",
                 "name"    => $school->schoolname ?? "School Payroll"
             ],
             "to" => [

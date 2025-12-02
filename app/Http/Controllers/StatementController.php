@@ -182,7 +182,7 @@ class StatementController extends Controller
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 "template_key" => "email-statement", // create this template in ZeptoMail
                 "from" => [
-                    "address" => "development@leverpay.io",
+                    "address" => "development@schooldrive.com.ng",
                     "name"    => $school->name ?? 'School'
                 ],
                 "to" => [
@@ -242,7 +242,7 @@ class StatementController extends Controller
             ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
                 "template_key" => "email-statement", // create this template in ZeptoMail
                 "from" => [
-                    "address" => "development@leverpay.io",
+                    "address" => "development@schooldrive.com.ng",
                     "name"    => $school->name ?? 'School'
                 ],
                 "to" => [
