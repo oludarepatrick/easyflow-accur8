@@ -26,10 +26,10 @@
                 <th>Class</th>
                 <th>Term</th>
                 <th>Session</th>
-                <th>Expected Fees</th>
-                <th>Amount Paid</th>
-                <th>Amount Due</th>
-                <th>Last Payment</th>
+                <th>ExpectedFees</th>
+                <th>AmtPaid</th>
+                <th>AmtDue</th>
+                <th>LastPay</th>
             </tr>
         </thead>
         <tbody>
