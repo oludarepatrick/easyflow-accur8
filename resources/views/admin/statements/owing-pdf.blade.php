@@ -56,7 +56,24 @@
         .amount-paid { 
             color: #008000; 
             font-weight: bold; 
+             }
+        .summary-box {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 13px;
+            background: #e6f4ff; /* light sky blue */
+            padding: 10px 15px;
+            border-left: 4px solid #cc0000; /* red accent */
+            border-radius: 4px;
+            width: auto;
+            display: inline-block;
         }
+        .summary-box strong {
+            color: #005f99; /* sky blue text */
+        }
+
+       
     </style>
 </head>
 <body>
@@ -66,6 +83,11 @@
     </div>
 
     <div class="watermark">{{ $school->schoolname ?? 'School' }}</div>
+
+    <div class="summary-box">
+        <p><strong>Total Amount Paid:</strong> ₦{{ number_format($totalPaid) }}</p>
+        <p><strong>Total Outstanding:</strong> ₦{{ number_format($totalDebt) }}</p>
+    </div>
 
     <table>
         <thead>
