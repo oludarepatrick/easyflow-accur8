@@ -508,7 +508,7 @@ public function sec_owingReport(Request $request)
     */
 
     // 1️⃣ Get all students (primary & student)
-    $students = User::where('schooltype', 'primary')
+    $students = User::where('schooltype', 'secondary')
         ->where('category', 'student')
         ->get();
 
