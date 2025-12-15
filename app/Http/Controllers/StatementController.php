@@ -478,7 +478,7 @@ class StatementController extends Controller
 }
 
 
-    public function sec_owingReport(Request $request)
+public function sec_owingReport(Request $request)
 {
     $term    = $request->input('term');
     $session = $request->input('session');
@@ -501,7 +501,81 @@ class StatementController extends Controller
 
     $receipts = $query->get();
 
-    // 🔢 Summary for chart
+    /*
+    |--------------------------------------------------------------------------
+    | 🔥 NEW LOGIC — INCLUDE STUDENTS WHO HAVE NOT PAID AT ALL
+    |--------------------------------------------------------------------------
+    */
+
+    // 1️⃣ Get all students (primary & student)
+    $students = User::where('schooltype', 'primary')
+        ->where('category', 'student')
+        ->get();
+
+    // 2️⃣ Get IDs of students who already have receipts
+    $alreadyInReceipts = $receipts->pluck('student_id')->toArray();
+
+    // 3️⃣ Loop through all students and find those without ANY payment
+    foreach ($students as $student) {
+
+        // Skip students already in receipts
+        if (in_array($student->id, $alreadyInReceipts)) {
+            continue;
+        }
+
+        // Check if student has ANY payment record through receipts/payments
+        $hasReceipt = StudentReceipts::where('student_id', $student->id)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->exists();
+
+        $hasPayment = StudentPayments::whereHas('receipt', function ($q) use ($student, $term, $session) {
+            $q->where('student_id', $student->id)
+              ->where('term', $term)
+              ->where('session', $session);
+        })->exists();
+
+        // If student has made any payment at all → skip
+        if ($hasReceipt || $hasPayment) {
+            continue;
+        }
+
+        // 4️⃣ Fetch expected school fees for their class, term & session
+        $fee = SchoolFee::where('class', $student->class)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->first();
+
+        if (!$fee) {
+            continue; // skip if no fee structure exists
+        }
+
+        // 5️⃣ Create a mock StudentReceipt for the Blade view
+        $fake = new StudentReceipts();
+        $fake->student = $student;
+        $fake->student_id = $student->id;
+        $fake->term = $term;
+        $fake->session = $session;
+
+        $fake->tuition = $fee->tuition;
+        $fake->uniform = $fee->uniform;
+        $fake->exam_fee = $fee->exam_fee;
+
+        $fake->total_expected = $fee->total;
+        $fake->amount_paid = 0;
+        $fake->amount_due = $fee->total;
+
+        $fake->payments = collect([]); // so the Blade won't break
+
+        // Add to receipt result list
+        $receipts->push($fake);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🔢 Summary for chart
+    |--------------------------------------------------------------------------
+    */
     $totalPaid = $receipts->sum('amount_paid');
     $totalDebt = $receipts->sum('amount_due');
 
@@ -520,7 +594,6 @@ class StatementController extends Controller
         return $pdf->download("owing_report_{$cleanTerm}_{$cleanSession}.pdf");
     }
 
-
     $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
     $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
     $school = School::first();
@@ -530,6 +603,59 @@ class StatementController extends Controller
         compact('receipts', 'terms', 'sessions', 'totalPaid', 'totalDebt')
     );
 }
+
+    /*public function sec_owingReport(Request $request)
+    {
+        $term    = $request->input('term');
+        $session = $request->input('session');
+
+        // 🔎 Filter receipts (students who still owe)
+        $query = StudentReceipts::with('student', 'payments')
+            ->where('amount_due', '>', 0)
+            ->whereHas('student', function ($q) {
+                $q->where('schooltype', 'secondary')
+                ->where('category', 'student');
+            });
+
+        if ($term) {
+            $query->where('term', $term);
+        }
+
+        if ($session) {
+            $query->where('session', $session);
+        }
+
+        $receipts = $query->get();
+
+        // 🔢 Summary for chart
+        $totalPaid = $receipts->sum('amount_paid');
+        $totalDebt = $receipts->sum('amount_due');
+
+        if ($request->has('download') && $request->download === 'pdf') {
+            $school = \App\Models\School::first();
+
+            // Fix invalid filename by removing slashes
+            $cleanSession = str_replace(['/', '\\'], '-', $session);
+            $cleanTerm = str_replace(['/', '\\'], '-', $term);
+
+            $pdf = \PDF::loadView(
+                'admin.statements.owing-pdf',
+                compact('receipts', 'school', 'term', 'session', 'totalPaid', 'totalDebt')
+            );
+
+            return $pdf->download("owing_report_{$cleanTerm}_{$cleanSession}.pdf");
+        }
+
+
+        $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
+        $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
+        $school = School::first();
+
+        return view(
+            'admin.statements.owing-report',
+            compact('receipts', 'terms', 'sessions', 'totalPaid', 'totalDebt')
+        );
+    }*/
 
 
     public function owingStudentsPdf(Request $request)

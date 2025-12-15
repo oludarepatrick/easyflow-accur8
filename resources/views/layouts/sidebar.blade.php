@@ -100,7 +100,12 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('reports.owing-students') }}">
-                                    <i class="bi bi-pencil-square"></i> Debtor List
+                                    <i class="bi bi-pencil-square"></i> Pry Debtor List
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('reports.sec_owing-students') }}">
+                                    <i class="bi bi-pencil-square"></i> Sec Debtor List
                                 </a>
                             </li>
                         </ul>
