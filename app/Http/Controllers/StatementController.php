@@ -125,169 +125,183 @@ class StatementController extends Controller
 
 
     public function exportPdf(Request $request)
-    {
-        // gather same filters as index
-        $payments = $this->paymentsQuery($request)
-            ->whereHas('user', function ($q) {
-                $q->where('schooltype', 'primary')
-                ->where('category', 'student');
-            })
-            ->orderBy('payment_date', 'desc')
-            ->get();
+{
+    // gather same filters as index
+    $payments = $this->paymentsQuery($request)
+        ->whereHas('receipt.student', function ($q) {
+            $q->where('schooltype', 'primary')
+              ->where('category', 'student');
+        })
+        ->orderBy('payment_date', 'desc')
+        ->get();
 
-        $school = School::first();
-        $total = $payments->sum('amount_paid');
+    $school = School::first();
+    $total = $payments->sum('amount_paid');
 
-        $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
-                ->setPaper('a4', 'landscape');
+    $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
+        ->setPaper('a4', 'landscape');
 
-        $filename = 'payments-statement-' . now()->format('YmdHis') . '.pdf';
-        return $pdf->download($filename);
-    }
+    $filename = 'payments-statement-' . now()->format('YmdHis') . '.pdf';
+
+    return $pdf->download($filename);
+}
+
 
     public function sec_exportPdf(Request $request)
-    {
-        // gather same filters as index
-        $payments = $this->paymentsQuery($request)
-            ->whereHas('user', function ($q) {
-                $q->where('schooltype', 'secondary')
-                ->where('category', 'student');
-            })
-            ->orderBy('payment_date', 'desc')
-            ->get();
+{
+    // gather same filters as index
+    $payments = $this->paymentsQuery($request)
+        ->whereHas('receipt.student', function ($q) {
+            $q->where('schooltype', 'secondary')
+              ->where('category', 'student');
+        })
+        ->orderBy('payment_date', 'desc')
+        ->get();
 
-        $school = School::first();
-        $total = $payments->sum('amount_paid');
+    $school = School::first();
+    $total = $payments->sum('amount_paid');
 
-        $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
-                ->setPaper('a4', 'landscape');
+    $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
+        ->setPaper('a4', 'landscape');
 
-        $filename = 'payments-statement-' . now()->format('YmdHis') . '.pdf';
-        return $pdf->download($filename);
-    }
+    $filename = 'payments-statement-' . now()->format('YmdHis') . '.pdf';
+
+    return $pdf->download($filename);
+}
+
 
 
     
 
     public function emailStatement(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'firstname' => 'nullable|string',
+{
+    $request->validate([
+        'email' => 'required|email',
+        'firstname' => 'nullable|string',
+    ]);
+
+    $payments = $this->paymentsQuery($request)
+        ->whereHas('receipt.student', function ($q) {
+            $q->where('schooltype', 'primary')
+              ->where('category', 'student');
+        })
+        ->orderBy('payment_date', 'desc')
+        ->get();
+
+    $school = School::first();
+    $total = $payments->sum('amount_paid');
+
+    $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
+        ->setPaper('a4', 'landscape')
+        ->output();
+
+    // Send using ZeptoMail template API
+    $response = Http::withoutVerifying()
+        ->withHeaders([
+            'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
+            'accept'        => 'application/json',
+            'content-type'  => 'application/json',
+        ])
+        ->timeout(30)
+        ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
+            "template_key" => "email-statement",
+            "from" => [
+                "address" => "development@schooldrive.com.ng",
+                "name"    => $school->name ?? 'School'
+            ],
+            "to" => [
+                ["email_address" => ["address" => $request->email]]
+            ],
+            "merge_info" => [
+                "firstname" => $request->firstname ?? '',
+                "term"      => $request->input('term') ?? '',
+                "session"   => $request->input('session') ?? '',
+                "total"     => number_format($total, 2),
+            ],
+            "attachments" => [
+                [
+                    "name" => "payments-statement.pdf",
+                    "mime_type" => "application/pdf",
+                    "content" => base64_encode($pdf)
+                ]
+            ]
         ]);
 
-        $payments = $this->paymentsQuery($request)
-            ->whereHas('user', function ($q) {
-                $q->where('schooltype', 'primary')
-                ->where('category', 'student');
-            })
-            ->orderBy('payment_date', 'desc')
-            ->get();
-
-        $school = School::first();
-        $total = $payments->sum('amount_paid');
-
-        $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
-                ->setPaper('a4', 'landscape')
-                ->output();
-
-        // Send using ZeptoMail template API (similar to your existing code)
-        $response = Http::withoutVerifying()
-            ->withHeaders([
-                'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
-                'accept'        => 'application/json',
-                'content-type'  => 'application/json',
-            ])->timeout(30)
-            ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
-                "template_key" => "email-statement", // create this template in ZeptoMail
-                "from" => [
-                    "address" => "development@schooldrive.com.ng",
-                    "name"    => $school->name ?? 'School'
-                ],
-                "to" => [
-                    ["email_address" => ["address" => $request->email]]
-                ],
-                "merge_info" => [
-                    "firstname" => $request->firstname ?? '',
-                    "term" => $request->input('term') ?? '',
-                    "session" => $request->input('session') ?? '',
-                    "total" => number_format($total, 2),
-                ],
-                "attachments" => [
-                    [
-                        "name" => "payments-statement.pdf",
-                        "mime_type" => "application/pdf",
-                        "content" => base64_encode($pdf)
-                    ]
-                ]
-            ]);
-
-        if ($response->failed()) {
-            return back()->with('error', 'Failed to send statement: ' . $response->body());
-        }
-
-        return back()->with('success', 'Statement emailed successfully to ' . $request->email);
+    if ($response->failed()) {
+        return back()->with('error', 'Failed to send statement: ' . $response->body());
     }
+
+    return back()->with(
+        'success',
+        'Statement emailed successfully to ' . $request->email
+    );
+}
+
 
     public function sec_emailStatement(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'firstname' => 'nullable|string',
+{
+    $request->validate([
+        'email' => 'required|email',
+        'firstname' => 'nullable|string',
+    ]);
+
+    $payments = $this->paymentsQuery($request)
+        ->whereHas('receipt.student', function ($q) {
+            $q->where('schooltype', 'secondary')
+              ->where('category', 'student');
+        })
+        ->orderBy('payment_date', 'desc')
+        ->get();
+
+    $school = School::first();
+    $total = $payments->sum('amount_paid');
+
+    $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
+        ->setPaper('a4', 'landscape')
+        ->output();
+
+    // Send using ZeptoMail template API
+    $response = Http::withoutVerifying()
+        ->withHeaders([
+            'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
+            'accept'        => 'application/json',
+            'content-type'  => 'application/json',
+        ])
+        ->timeout(30)
+        ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
+            "template_key" => "email-statement",
+            "from" => [
+                "address" => "development@schooldrive.com.ng",
+                "name"    => $school->name ?? 'School'
+            ],
+            "to" => [
+                ["email_address" => ["address" => $request->email]]
+            ],
+            "merge_info" => [
+                "firstname" => $request->firstname ?? '',
+                "term"      => $request->input('term') ?? '',
+                "session"   => $request->input('session') ?? '',
+                "total"     => number_format($total, 2),
+            ],
+            "attachments" => [
+                [
+                    "name" => "payments-statement.pdf",
+                    "mime_type" => "application/pdf",
+                    "content" => base64_encode($pdf)
+                ]
+            ]
         ]);
 
-        $payments = $this->paymentsQuery($request)
-            ->whereHas('user', function ($q) {
-                $q->where('schooltype', 'secondary')
-                ->where('category', 'student');
-            })
-            ->orderBy('payment_date', 'desc')
-            ->get();
-
-        $school = School::first();
-        $total = $payments->sum('amount_paid');
-
-        $pdf = PDF::loadView('admin.statements.pdf', compact('payments', 'school', 'total'))
-                ->setPaper('a4', 'landscape')
-                ->output();
-
-        // Send using ZeptoMail template API (similar to your existing code)
-        $response = Http::withoutVerifying()
-            ->withHeaders([
-                'authorization' => 'Zoho-enczapikey ' . env('ZEPTOMAIL_API_KEY'),
-                'accept'        => 'application/json',
-                'content-type'  => 'application/json',
-            ])->timeout(30)
-            ->post(env('ZEPTOMAIL_URL') . '/v1.1/email/template', [
-                "template_key" => "email-statement", // create this template in ZeptoMail
-                "from" => [
-                    "address" => "development@schooldrive.com.ng",
-                    "name"    => $school->name ?? 'School'
-                ],
-                "to" => [
-                    ["email_address" => ["address" => $request->email]]
-                ],
-                "merge_info" => [
-                    "firstname" => $request->firstname ?? '',
-                    "term" => $request->input('term') ?? '',
-                    "session" => $request->input('session') ?? '',
-                    "total" => number_format($total, 2),
-                ],
-                "attachments" => [
-                    [
-                        "name" => "payments-statement.pdf",
-                        "mime_type" => "application/pdf",
-                        "content" => base64_encode($pdf)
-                    ]
-                ]
-            ]);
-
-        if ($response->failed()) {
-            return back()->with('error', 'Failed to send statement: ' . $response->body());
-        }
-
-        return back()->with('success', 'Statement emailed successfully to ' . $request->email);
+    if ($response->failed()) {
+        return back()->with('error', 'Failed to send statement: ' . $response->body());
     }
+
+    return back()->with(
+        'success',
+        'Statement emailed successfully to ' . $request->email
+    );
+}
+
 
 
     protected function paymentsQuery(Request $request)
