@@ -26,28 +26,33 @@ class StatementController extends Controller
     $to = $request->input('to');
 
     $query = StudentPayments::with(['receipt.student'])
-        ->whereHas('user', function ($q) {
+        ->whereHas('receipt.student', function ($q) {
             $q->where('schooltype', 'primary')
               ->where('category', 'student');
         });
 
     // filter by session/term via receipts
     if ($term) {
-        $query->whereHas('receipt', fn($q) => $q->where('term', $term));
+        $query->whereHas('receipt', fn ($q) => $q->where('term', $term));
     }
+
     if ($session) {
-        $query->whereHas('receipt', fn($q) => $q->where('session', $session));
+        $query->whereHas('receipt', fn ($q) => $q->where('session', $session));
     }
 
     // date range (payment_date)
     if ($from) {
         $query->whereDate('payment_date', '>=', Carbon::parse($from)->startOfDay());
     }
+
     if ($to) {
         $query->whereDate('payment_date', '<=', Carbon::parse($to)->endOfDay());
     }
 
-    $payments = $query->orderBy('payment_date', 'desc')->paginate(25)->withQueryString();
+    $payments = $query
+        ->orderBy('payment_date', 'desc')
+        ->paginate(25)
+        ->withQueryString();
 
     // totals
     $total = $query->sum('amount_paid');
@@ -57,53 +62,66 @@ class StatementController extends Controller
     $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
     $school = School::first();
 
-    return view('admin.statements.payments', compact('payments','total','sessions','terms','school','term','session','from','to'));
+    return view(
+        'admin.statements.payments',
+        compact('payments', 'total', 'sessions', 'terms', 'school', 'term', 'session', 'from', 'to')
+    );
 }
+
 
 
     // Secondary Payments Statement
     public function sec_index(Request $request)
-    {
-        // Filters
-        $term = $request->input('term');
-        $session = $request->input('session');
-        $from = $request->input('from');
-        $to = $request->input('to');
+{
+    // Filters
+    $term = $request->input('term');
+    $session = $request->input('session');
+    $from = $request->input('from');
+    $to = $request->input('to');
 
-        $query = StudentPayments::with(['receipt.student'])
-            ->whereHas('user', function ($q) {
-                $q->where('schooltype', 'secondary')
-                ->where('category', 'student');
-            });
+    $query = StudentPayments::with(['receipt.student'])
+        ->whereHas('receipt.student', function ($q) {
+            $q->where('schooltype', 'secondary')
+              ->where('category', 'student');
+        });
 
-        // filter by session/term via receipts
-        if ($term) {
-            $query->whereHas('receipt', fn($q) => $q->where('term', $term));
-        }
-        if ($session) {
-            $query->whereHas('receipt', fn($q) => $q->where('session', $session));
-        }
-
-        // date range (payment_date)
-        if ($from) {
-            $query->whereDate('payment_date', '>=', Carbon::parse($from)->startOfDay());
-        }
-        if ($to) {
-            $query->whereDate('payment_date', '<=', Carbon::parse($to)->endOfDay());
-        }
-
-        $payments = $query->orderBy('payment_date', 'desc')->paginate(25)->withQueryString();
-
-        // totals
-        $total = $query->sum('amount_paid');
-
-        // For filter selects
-        $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
-        $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
-        $school = School::first();
-
-        return view('admin.statements.sec_payments', compact('payments','total','sessions','terms','school','term','session','from','to'));
+    // filter by session/term via receipts
+    if ($term) {
+        $query->whereHas('receipt', fn ($q) => $q->where('term', $term));
     }
+
+    if ($session) {
+        $query->whereHas('receipt', fn ($q) => $q->where('session', $session));
+    }
+
+    // date range (payment_date)
+    if ($from) {
+        $query->whereDate('payment_date', '>=', Carbon::parse($from)->startOfDay());
+    }
+
+    if ($to) {
+        $query->whereDate('payment_date', '<=', Carbon::parse($to)->endOfDay());
+    }
+
+    $payments = $query
+        ->orderBy('payment_date', 'desc')
+        ->paginate(25)
+        ->withQueryString();
+
+    // totals
+    $total = $query->sum('amount_paid');
+
+    // For filter selects
+    $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
+    $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
+    $school = School::first();
+
+    return view(
+        'admin.statements.sec_payments',
+        compact('payments', 'total', 'sessions', 'terms', 'school', 'term', 'session', 'from', 'to')
+    );
+}
+
 
 
     public function exportPdf(Request $request)
@@ -604,58 +622,7 @@ public function sec_owingReport(Request $request)
     );
 }
 
-    /*public function sec_owingReport(Request $request)
-    {
-        $term    = $request->input('term');
-        $session = $request->input('session');
-
-        // 🔎 Filter receipts (students who still owe)
-        $query = StudentReceipts::with('student', 'payments')
-            ->where('amount_due', '>', 0)
-            ->whereHas('student', function ($q) {
-                $q->where('schooltype', 'secondary')
-                ->where('category', 'student');
-            });
-
-        if ($term) {
-            $query->where('term', $term);
-        }
-
-        if ($session) {
-            $query->where('session', $session);
-        }
-
-        $receipts = $query->get();
-
-        // 🔢 Summary for chart
-        $totalPaid = $receipts->sum('amount_paid');
-        $totalDebt = $receipts->sum('amount_due');
-
-        if ($request->has('download') && $request->download === 'pdf') {
-            $school = \App\Models\School::first();
-
-            // Fix invalid filename by removing slashes
-            $cleanSession = str_replace(['/', '\\'], '-', $session);
-            $cleanTerm = str_replace(['/', '\\'], '-', $term);
-
-            $pdf = \PDF::loadView(
-                'admin.statements.owing-pdf',
-                compact('receipts', 'school', 'term', 'session', 'totalPaid', 'totalDebt')
-            );
-
-            return $pdf->download("owing_report_{$cleanTerm}_{$cleanSession}.pdf");
-        }
-
-
-        $sessions = \App\Models\SchoolFee::select('session')->distinct()->pluck('session');
-        $terms = \App\Models\SchoolFee::select('term')->distinct()->pluck('term');
-        $school = School::first();
-
-        return view(
-            'admin.statements.owing-report',
-            compact('receipts', 'terms', 'sessions', 'totalPaid', 'totalDebt')
-        );
-    }*/
+    
 
 
     public function owingStudentsPdf(Request $request)

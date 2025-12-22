@@ -6,7 +6,7 @@
     <title>Account Management Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="index.css">
+    
 </head>
 <body>
     <div class="container-fluid">
@@ -170,107 +170,3 @@
     </script>
 </body>
 </html>
-
-
-Here is the css file referenced in the HTML above. it was initially inside index.css but has been moved here for now:
-:root {
-    --primary: #0070f3;
-    --primary-foreground: #ffffff;
-    --secondary: #f5f5f5;
-    --secondary-foreground: #111111;
-    --accent: #f8f9fa;
-    --accent-foreground: #343a40;
-    --background: #ffffff;
-    --foreground: #111111;
-    --card: #ffffff;
-    --card-foreground: #111111;
-    --border: #e9ecef;
-    --input: #e9ecef;
-    --ring: #0070f3;
-    --radius: 0.5rem;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
-
-body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background-color: var(--background);
-    color: var(--foreground);
-}
-
-.sidebar {
-    box-shadow: var(--shadow);
-    min-height: 100vh;
-    background-color: var(--card) !important;
-}
-
-.nav-link {
-    color: var(--foreground);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-}
-
-.nav-link:hover {
-    background-color: var(--accent);
-    color: var(--accent-foreground);
-}
-
-.nav-link.active {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
-}
-
-.card {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-}
-
-.list-group-item {
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
-    padding: 1rem;
-}
-
-.list-group-item:first-child {
-    border-top: none;
-}
-
-.list-group-item:last-child {
-    border-bottom: none;
-}
-
-.btn-outline-secondary {
-    border-color: var(--border);
-    color: var(--foreground);
-}
-
-.btn-outline-secondary:hover {
-    background-color: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-foreground);
-}
-
-.border-bottom {
-    border-color: var(--border) !important;
-}
-
-.text-success {
-    color: #28a745 !important;
-}
-
-.text-danger {
-    color: #dc3545 !important;
-}
-
-.text-primary {
-    color: var(--primary) !important;
-}
-
-.bi {
-    margin-right: 0.5rem;
-}
