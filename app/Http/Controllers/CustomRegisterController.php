@@ -50,7 +50,7 @@ $user = User::create([
     'status'     => 'active',
 ]);
 
-// If staff, save bank details
+//If staff, save bank details
 if ($validated['category'] === 'staff') {
     \App\Models\StaffBankDetail::create([
         'staff_id'     => $user->id,
