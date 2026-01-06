@@ -67,6 +67,7 @@ if ($validated['category'] === 'staff') {
         'term'      => $user->term ?? 'N/A',
         'category'      => $user->category ?? 'N/A',
         'session'   => $user->session ?? 'N/A',
+        'school_name'   => 'Easyflow Schools',
         'date'      => Carbon::now()->format('Y-m-d'),
     ];
 
