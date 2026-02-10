@@ -34,6 +34,28 @@ class AdminDashboardController extends Controller
     // use total_amount since "amount" doesn’t exist anymore
     $totalRevenue = StudentPayments::sum('amount_paid');
 
+    /*$termRevenue = StudentReceipts::select('term', DB::raw('SUM(amount_paid) as total'))
+    ->where('schooltype', 'primary')
+    ->where('category', 'student')
+    ->groupBy('term')
+    ->pluck('total', 'term');*/
+
+    // ✅ Total expected revenue for the entire term
+    // Based on number of students per class × fee set in school_fees.total
+    $totalExpectedPry = DB::table('users')
+        ->join('school_fees', 'users.class', '=', 'school_fees.class')
+        ->where('users.category', 'student')
+        ->where('schooltype', 'primary')
+        ->where('users.status', 'active')
+        ->sum('school_fees.total');
+
+    $totalExpectedSec = DB::table('users')
+        ->join('school_fees', 'users.class', '=', 'school_fees.class')
+        ->where('users.category', 'student')
+        ->where('schooltype', 'secondary')
+        ->where('users.status', 'active')
+        ->sum('school_fees.total');
+
     $totalRevenuePry = StudentPayments::whereHas('user', function ($query) {
     $query->where('schooltype', 'primary')
             ->where('category', 'student');
@@ -59,6 +81,7 @@ class AdminDashboardController extends Controller
     ->groupBy('term')
     ->pluck('total', 'term');
 
+
     // Normalize terms to your expected keys
     $chartData = [
         'First Term'  => $termRevenue['First Term'] ?? 0,
@@ -66,15 +89,21 @@ class AdminDashboardController extends Controller
         'Third Term'  => $termRevenue['Third Term'] ?? 0,
     ];
 
+    // ✅ Outstanding balance (Expected - Paid)
+    $outstandingBalancePry = max($totalExpectedPry - $totalRevenuePry, 0);
+    $outstandingBalanceSec = max($totalExpectedSec - $totalRevenueSec, 0);
+    $outstandingBalance = $outstandingBalancePry + $outstandingBalanceSec;
     return view('dashboard.admin', [
         'activeStudents' => $activeStudents,
         'activeStaff'    => $activeStaff,
         'totalRevenue'   => $totalRevenue,
+        'termRevenue'    => $termRevenue,
         'totalRevenuePry'   => $totalRevenuePry,
         'totalRevenueSec'   => $totalRevenueSec,
         'totalSalary'    => $totalSalary,
         'recentInvoices' => $recentInvoices,
         'chartData'      => $chartData,
+        'outstandingBalancePry' => $outstandingBalancePry,
     ]);
 
 
